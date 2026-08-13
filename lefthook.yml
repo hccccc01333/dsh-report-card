@@ -52,4 +52,6 @@ pre-merge-commit:
 pre-push:
   jobs:
     - name: typecheck
-      run: pnpm run typecheck
+      # PATH-independent equivalent of `pnpm run typecheck`: git hooks may run
+      # without pnpm/npm on PATH, but node_modules/.bin always resolves.
+      run: node_modules/.bin/tsc -b tsconfig.host.json && node_modules/.bin/tsdown --env.DSH_BUILD_FACE host && node_modules/.bin/tsc -b tsconfig.client.json
