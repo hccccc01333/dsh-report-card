@@ -16,6 +16,8 @@ packages:
   # globs (vendor/*, packages/*/*) exclude them. See examples/AGENTS.md and the archived
   # run-ci-examples-from-built-lib Agent Note.
   - examples
+  # The report-card demo leaf: a small tool package that emits card: 'report'.
+  - demo/report-card-demo
   # Deploy root of the single-exe build: a pure dependency manifest whose
   # closure is what the exe bundles and what the Python runtime distributes.
   - python/sdk-runtime

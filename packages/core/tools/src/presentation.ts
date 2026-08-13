@@ -43,7 +43,20 @@ export interface FileDiff {
  * Provider-neutral pending-call presentation. Tools declare one tagged intent;
  * UI bridges map it without special-casing tool names.
  */
-export type ToolCallView = GenericCallView | TerminalCallView | DiffCallView
+export type ToolCallView = GenericCallView | TerminalCallView | DiffCallView | ReportCallView
+
+/**
+ * A call that will produce a rich HTML report rendered inline by a capable
+ * client. The pending state carries the report title the tool commits to, so
+ * the row reads as a report generation even before the HTML exists.
+ */
+export interface ReportCallView {
+  card: 'report'
+  /** Card header (e.g. `Sales analysis report`). */
+  title: string
+  /** Files this call writes, for editor follow-along. */
+  locations?: FileLocation[]
+}
 
 /**
  * The default card: a titled tool-call row with an optional category icon, a
@@ -137,7 +150,27 @@ export interface ReadFileLine {
  * `ToolDefinition.presentResult`; omitting the method keeps the pending
  * title and renders the raw result content.
  */
-export type ToolResultView = GenericResultView | TerminalResultView | DiffResultView | SearchResultView | ReadResultView | WebResultView
+export type ToolResultView =
+  | GenericResultView
+  | TerminalResultView
+  | DiffResultView
+  | SearchResultView
+  | ReadResultView
+  | WebResultView
+  | ReportResultView
+
+/**
+ * A completed report rendered inline by a capable client. `html` is a
+ * self-contained HTML document displayed in a sandboxed frame, so report
+ * scripts cannot touch the host page or read its storage.
+ */
+export interface ReportResultView {
+  card: 'report'
+  /** Replacement title for the completed card. */
+  title?: string
+  /** Self-contained HTML document to render in a sandboxed frame. */
+  html: string
+}
 
 /**
  * The default completed card: an optional replacement title and reformatted

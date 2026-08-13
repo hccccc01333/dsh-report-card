@@ -20,13 +20,14 @@
 import { useState, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react'
 import clsx from 'clsx'
 import {
-  CodeBlock, DiffBlock, DisclosureRow, IconInspectOutline12, ReadBlock, SearchBlock, StateDot, TerminalBlock, WebBlock,
+  CodeBlock, DiffBlock, DisclosureRow, IconInspectOutline12, ReadBlock, ReportBlock, SearchBlock, StateDot, TerminalBlock, WebBlock,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { WebBlockProps } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import { CHAT_DIFF_MAX_LINES, type DiffCardModel } from '../models/diff-card-model.ts'
 import { CHAT_READ_MAX_LINES, type ReadCardModel } from '../models/read-card-model.ts'
 import { CHAT_SEARCH_MAX_LINES, type SearchCardModel } from '../models/search-card-model.ts'
+import type { ReportCardModel } from '../models/report-card-model.ts'
 import { terminalBlockLabels, type TerminalCardModel } from '../models/terminal-card-model.ts'
 import type { ToolRowState, ToolRowVariant } from '../models/tool-call-model.ts'
 import css from './ToolRow.module.css'
@@ -86,6 +87,12 @@ export interface ToolRowProps {
    * list or fetched-source card when present.
    */
   web?: WebBlockProps | null | undefined
+  /**
+   * Report-card material for a call whose render intent is a report card
+   * (derived by `reportCardModel`); it replaces the text body with a sandboxed
+   * inline report when present.
+   */
+  report?: ReportCardModel | null | undefined
   state: ToolRowState
   /**
    * Filesystem path from tool args; when set with onOpenFile, the summary
@@ -141,6 +148,7 @@ export function ToolRow({
   read,
   search,
   web,
+  report,
   state,
   filePath,
   onOpenFile,
@@ -152,11 +160,12 @@ export function ToolRow({
   const readBody = read ?? null
   const searchBody = search ?? null
   const webBody = web ?? null
+  const reportBody = report ?? null
   const outputText = output ?? null
   // A card replaces the text body; a call carries at most one card kind, so the
   // card props are mutually exclusive. Any of them, or a text body/output,
   // makes the row expandable.
-  const card = terminalBody ?? diffBody ?? readBody ?? searchBody ?? webBody
+  const card = terminalBody ?? diffBody ?? readBody ?? searchBody ?? webBody ?? reportBody
   const expandable = body !== null || outputText !== null || card !== null
   const open = expanded && expandable
   // The run-state label AT needs: the StateDot and the running sweep are both
@@ -260,36 +269,38 @@ export function ToolRow({
                   )
                   : webBody !== null
                     ? <WebBlock {...webBody} className={css.webBody} />
-                    : (
-                      <>
-                        {variant === 'code' && body !== null && (
-                          <div className={css.bodyScroll}>
-                            <CodeBlock code={body} lang="typescript" copyLabel={t('copy')} copiedLabel={t('copied')} className={css.codeBody} />
-                          </div>
-                        )}
-                        {(cardBody !== null || outputText !== null) && (
-                          <div className={css.ioCard}>
-                            {cardBody !== null && (
-                              <div className={css.ioSection}>
-                                <span className={css.ioLabel}>IN</span>
-                                <span className={css.ioText}>{cardBody}</span>
-                              </div>
-                            )}
-                            {cardBody !== null && outputText !== null && (
-                              <span className={css.ioDivider} aria-hidden />
-                            )}
-                            {outputText !== null && (
-                              <div className={css.ioSection}>
-                                <span className={css.ioLabel}>OUT</span>
-                                <span className={css.ioText} data-error={state === 'error' || undefined}>
-                                  {outputText}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    )}
+                    : reportBody !== null
+                      ? <ReportBlock {...reportBody.card} className={css.reportBody} />
+                      : (
+                        <>
+                          {variant === 'code' && body !== null && (
+                            <div className={css.bodyScroll}>
+                              <CodeBlock code={body} lang="typescript" copyLabel={t('copy')} copiedLabel={t('copied')} className={css.codeBody} />
+                            </div>
+                          )}
+                          {(cardBody !== null || outputText !== null) && (
+                            <div className={css.ioCard}>
+                              {cardBody !== null && (
+                                <div className={css.ioSection}>
+                                  <span className={css.ioLabel}>IN</span>
+                                  <span className={css.ioText}>{cardBody}</span>
+                                </div>
+                              )}
+                              {cardBody !== null && outputText !== null && (
+                                <span className={css.ioDivider} aria-hidden />
+                              )}
+                              {outputText !== null && (
+                                <div className={css.ioSection}>
+                                  <span className={css.ioLabel}>OUT</span>
+                                  <span className={css.ioText} data-error={state === 'error' || undefined}>
+                                    {outputText}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </>
+                      )}
           {inspect !== undefined && (
             <button
               type="button"

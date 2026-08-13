@@ -1,5 +1,37 @@
 # DeepSeek Harness
 
+> This repository is a feature fork: **dsh-report-card** adds a `card: 'report'`
+> render intent to DeepSeek Harness so tools can render interactive HTML
+> reports directly inside the conversation.
+
+## What this fork adds
+
+- `packages/core/tools/src/presentation.ts` — new `ReportCallView` /
+  `ReportResultView` (`card: 'report'`, carrying a self-contained HTML
+  document), wired into the `ToolCallView` / `ToolResultView` unions. The wire
+  types flow to clients automatically, so any tool can emit the card.
+- `packages/client/ui-primitives/src/ReportBlock.tsx` — sandboxed inline
+  renderer: the report HTML is displayed in an `<iframe sandbox="allow-scripts">`
+  (no same-origin), so report scripts can run but cannot touch the host page.
+- `packages/client/ui-tool` — `reportCardModel` derivation plus render wiring
+  in the chat tool row and the details panel; malformed wire payloads fall
+  back to the generic card instead of crashing.
+- `demo/report-card-demo` — a demo tool that emits the card.
+
+## Try the demo
+
+```sh
+pnpm install
+pnpm dsh --profile web --patch ./demo/report-card-demo/cordis.yml
+```
+
+Open `http://127.0.0.1:3080` and ask: `Use the demo_report tool.` The returned
+HTML report renders inline in the conversation.
+
+Any tool can use the intent by declaring a `presentResult` that returns
+`{ card: 'report', title, html }`; `dsh-report-html` is the full report
+generator companion that produces the HTML payload.
+
 English | [中文](README.zh.md)
 
 DeepSeek Harness (`dsh`) is an open-source agent harness developed by [DeepSeek AI](https://deepseek.com).

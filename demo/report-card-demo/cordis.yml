@@ -1,0 +1,5 @@
+# Local development overlay: mount the demo tool that emits card: 'report'.
+# Run: pnpm dsh --profile web --patch ./demo/report-card-demo/cordis.yml
+- insert:
+    - id: report-card-demo
+      name: 'file:///D:/dsh-report-card/demo/report-card-demo/src/index.ts'

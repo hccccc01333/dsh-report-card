@@ -1,0 +1,11 @@
+{
+  "name": "dsh-report-card-demo",
+  "version": "0.1.0",
+  "description": "Demo tool emitting the card: 'report' render intent",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@deepseek-ai/cordis": "workspace:^",
+    "@deepseek-ai/dsh-tools": "workspace:^"
+  }
+}
