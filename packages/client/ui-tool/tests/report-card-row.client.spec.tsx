@@ -3,7 +3,7 @@
 // the standalone ChatGPT-style card itself renders in the core message
 // renderer (ui-conversation ChatNodeSeat), covered by its own spec.
 
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import type { RunningToolCall, ToolResultNode } from '@deepseek-ai/dsh-client-runtime/client'
 import type { ToolResultView } from '@deepseek-ai/dsh-api-remotes/client'
@@ -13,6 +13,15 @@ import { zh } from '@deepseek-ai/dsh-client-ui-conversation/src/client/locales.t
 import { GenericToolCard, type GenericToolCardProps } from '../src/client/tool/toolviews/GenericToolCard.tsx'
 
 afterEach(cleanup)
+
+beforeEach(() => {
+  vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:report')
+  vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
 
 const t: GenericToolCardProps['t'] = makeTranslate(zh, commonZh)
 
@@ -47,6 +56,6 @@ describe('report cards in the conversation', () => {
     const view = render(<GenericToolCard {...ownerProps(settledReport(), 'report_analysis')} />)
     expect(view.container.querySelector('iframe')).toBeNull()
     fireEvent.click(view.container.querySelector('[data-expandable]')!)
-    expect(view.container.querySelector('iframe')?.getAttribute('srcdoc')).toBe(REPORT_HTML)
+    expect(view.container.querySelector('iframe')?.getAttribute('src')).toBe('blob:report')
   })
 })

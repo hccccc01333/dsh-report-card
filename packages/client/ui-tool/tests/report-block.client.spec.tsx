@@ -3,24 +3,34 @@
 // report HTML as a compact card preview, expands to the full report, resizes
 // from a postMessage height contract, and opens/copies/downloads the HTML.
 
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import { applyReportHeightMessage, REPORT_HEIGHT_MESSAGE, ReportBlock } from '@deepseek-ai/dsh-client-ui-primitives'
 
 afterEach(cleanup)
 
+beforeEach(() => {
+  vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:report')
+  vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
+
 const HTML = '<!DOCTYPE html><html><body>ok</body></html>'
 
 describe('ReportBlock', () => {
-  it('renders the compact card preview in a sandboxed iframe without same-origin', () => {
+  it('renders the compact card preview in a sandboxed blob iframe without same-origin', () => {
     const { container } = render(<ReportBlock title="Sales" html={HTML} />)
     const frame = container.querySelector('iframe')!
     expect(frame.getAttribute('sandbox')).toBe('allow-scripts')
-    expect(frame.getAttribute('srcdoc')).toBe(HTML)
+    expect(frame.getAttribute('src')).toBe('blob:report')
     expect(container.textContent).toContain('Sales')
     expect(container.textContent).toContain('Expand')
     expect(container.textContent).toContain('Open in new tab')
-    expect(container.querySelector('.previewOverlay') ?? container.querySelector('[class*="previewOverlay"]')).toBeTruthy()
+    // The collapsed preview has no overlay: the frame stays scrollable.
+    expect(container.querySelector('[class*="previewOverlay"]')).toBeNull()
   })
 
   it('expands to the full report when Expand is clicked', () => {
@@ -57,16 +67,11 @@ describe('ReportBlock', () => {
 
   it('opens the report in a new tab from a blob URL', () => {
     const open = vi.spyOn(window, 'open').mockImplementation(() => null)
-    const create = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:report')
-    const revoke = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
     const { container } = render(<ReportBlock html={HTML} />)
     const buttons = container.querySelectorAll('button')
     fireEvent.click(buttons[1]!)
-    expect(create).toHaveBeenCalled()
     expect(open).toHaveBeenCalledWith('blob:report', '_blank', 'noopener')
     open.mockRestore()
-    create.mockRestore()
-    revoke.mockRestore()
   })
 
   it('copies the report html to the clipboard with feedback', async () => {
@@ -80,8 +85,6 @@ describe('ReportBlock', () => {
   })
 
   it('downloads the report html with a title-derived file name', () => {
-    const create = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:report')
-    const revoke = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
     const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
     const { container } = render(<ReportBlock title="Sales Report" html={HTML} />)
     const buttons = container.querySelectorAll('button')
@@ -89,7 +92,5 @@ describe('ReportBlock', () => {
     expect(click).toHaveBeenCalled()
     expect((click.mock.instances[0] as HTMLAnchorElement | undefined)?.download).toBe('sales-report.html')
     click.mockRestore()
-    create.mockRestore()
-    revoke.mockRestore()
   })
 })

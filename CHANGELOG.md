@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.16.0] - 2026-08-14
+
+- Report frames load through a blob URL instead of `srcdoc`, so table-of-
+  contents anchor links inside a report become same-document hash navigation
+  and never blank the frame.
+- The collapsed preview no longer shows an overlay: the preview stays
+  scrollable and expand/collapse lives on the header button.
+
 ## [0.15.0] - 2026-08-14
 
 - The right-hand report panel supports multiple reports as tabs (click a card

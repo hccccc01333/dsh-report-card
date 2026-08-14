@@ -2,7 +2,7 @@
 // The ChatGPT-style report artifact flow: small title cards open a right-hand
 // panel with multi-report tabs and a draggable width.
 
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import {
   reportArtifactStore,
@@ -15,6 +15,15 @@ import {
 afterEach(() => {
   cleanup()
   reportArtifactStore.reset()
+})
+
+beforeEach(() => {
+  vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:report')
+  vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  vi.restoreAllMocks()
 })
 
 const HTML = '<!DOCTYPE html><html><body>report</body></html>'
@@ -44,7 +53,7 @@ describe('report artifacts', () => {
     fireEvent.click(view.container.querySelector('[data-report-card]')!)
     const panel = view.container.querySelector('[data-report-panel]')!
     expect(panel).toBeTruthy()
-    expect(panel.querySelector('iframe')?.getAttribute('srcdoc')).toBe(HTML)
+    expect(panel.querySelector('iframe')?.getAttribute('src')).toBe('blob:report')
     fireEvent.click(view.getByRole('button', { name: 'close' }))
     expect(reportArtifactStore.get().artifacts.length).toBe(0)
   })
@@ -63,9 +72,9 @@ describe('report artifacts', () => {
     fireEvent.click(cards[1]!)
     expect(reportArtifactStore.get().artifacts.length).toBe(2)
     await waitFor(() => expect(view.container.querySelectorAll('[data-report-tab]').length).toBe(2))
-    await waitFor(() => expect(view.container.querySelector('[data-report-panel] iframe')?.getAttribute('srcdoc')).toBe(V2_HTML))
+    await waitFor(() => expect(view.container.querySelector('[data-report-panel] iframe')?.getAttribute('src')).toBe('blob:report'))
     fireEvent.click(view.container.querySelectorAll('[data-report-tab]')[0]!)
-    await waitFor(() => expect(view.container.querySelector('[data-report-panel] iframe')?.getAttribute('srcdoc')).toBe(HTML))
+    await waitFor(() => expect(view.container.querySelector('[data-report-panel] iframe')?.getAttribute('src')).toBe('blob:report'))
     fireEvent.click(view.getByRole('button', { name: 'close' }))
     await waitFor(() => expect(view.container.querySelectorAll('[data-report-tab]').length).toBe(1))
   })

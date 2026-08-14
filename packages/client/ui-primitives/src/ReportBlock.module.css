@@ -54,17 +54,3 @@
   border-radius: 12px;
   background: #ffffff;
 }
-
-.previewOverlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--dsw-alias-label-secondary);
-  border: none;
-  cursor: pointer;
-  font: var(--dsw-font-xs-13);
-  font-weight: 600;
-}

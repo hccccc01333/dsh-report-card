@@ -108,6 +108,15 @@ export function ReportBlock({
   const [height, setHeight] = useState(initialHeight)
   const [copied, setCopied] = useState(false)
   const [open, setOpen] = useState(defaultExpanded === true)
+  const [blobUrl, setBlobUrl] = useState<string | null>(null)
+  useEffect(() => {
+    // Load the report through a blob URL instead of srcdoc: anchor links
+    // (table-of-contents jumps) become same-document hash navigation and never
+    // blank the frame by reloading about:srcdoc.
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }))
+    setBlobUrl(url)
+    return () => URL.revokeObjectURL(url)
+  }, [html])
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       // Only the report inside THIS frame may size it.
@@ -187,18 +196,8 @@ export function ReportBlock({
           className={css.frame}
           title={title ?? 'report'}
           sandbox="allow-scripts"
-          srcDoc={html}
+          src={blobUrl ?? undefined}
         />
-        {!open && (
-          <button
-            type="button"
-            className={css.previewOverlay}
-            aria-label={expandLabel}
-            onClick={() => setOpen(true)}
-          >
-            {expandLabel}
-          </button>
-        )}
       </div>
     </div>
   )
