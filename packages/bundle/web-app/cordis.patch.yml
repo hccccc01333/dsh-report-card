@@ -215,6 +215,12 @@
     - id: ui-deliverables
       name: '@deepseek-ai/dsh-client-ui-deliverables'
 
+    # Report artifacts: the turn-tail report card and the right-hand panel
+    # (tabs/search/scroll memory/ask-in-chat) over the card: 'report' intent.
+    # Remove this entry to turn the surface off.
+    - id: ui-report-panel
+      name: '@deepseek-ai/dsh-client-ui-report-panel'
+
 
     - id: ui-workspace
       name: '@deepseek-ai/dsh-client-ui-workspace'

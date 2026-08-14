@@ -1,11 +1,8 @@
-import { memo, useEffect, useRef } from 'react'
+import { memo } from 'react'
 import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
-import type { ChatNode } from '../contract/chat-nodes.ts'
 import type { ChatNodeViewProps, TurnTailOwnerProps } from '../contract/slots.ts'
 import { MessageIconActions } from './MessageIconActions.tsx'
 import { assistantText } from './turn-assistant.ts'
-import { ReportCardBox, useReportArtifact } from './report-artifact.tsx'
-import { reportViewFromNode } from './report-card.ts'
 import css from './TurnTailNodeView.module.css'
 
 type TurnTailNodeViewProps = ChatNodeViewProps<'turn-tail'>
@@ -18,26 +15,6 @@ export const TurnTailNodeView = memo(function TurnTailNodeView({
   const data = node.data
   const hasLaterChatNode = useSession(snapshot =>
     snapshot.chat.locations.getTurn(data.turn).at(-1) !== node.key)
-  // The last report card of this turn renders at the very bottom of the
-  // conversation, fully outside the tool-call tree (ChatGPT-artifact style).
-  const reportView = useSession((snapshot) => {
-    const keys = snapshot.chat.locations.getTurn(data.turn)
-    for (let index = keys.length - 1; index >= 0; index -= 1) {
-      const key = keys[index]
-      if (key === undefined) continue
-      const view = reportViewFromNode(snapshot.chat.nodes.get(key) as ChatNode | undefined)
-      if (view !== null) return view
-    }
-    return null
-  })
-  // A newer report replaces the content of an already-open panel immediately.
-  const { sync } = useReportArtifact()
-  const syncedHtml = useRef<string | null>(null)
-  useEffect(() => {
-    if (reportView === null || syncedHtml.current === reportView.html) return
-    syncedHtml.current = reportView.html
-    sync(reportView)
-  }, [reportView, sync])
   const turn = node.location.kind === 'turn' || node.location.kind === 'step'
     ? node.location.turn
     : undefined
@@ -71,16 +48,6 @@ export const TurnTailNodeView = memo(function TurnTailNodeView({
         extraActions={assistantActions}
         t={t}
       />
-      {reportView !== null && (
-        <div className={css.reportCard} data-report-standalone>
-          <ReportCardBox
-            title={reportView.title}
-            html={reportView.html}
-            documents={reportView.documents}
-            hint={t('report.cardHint')}
-          />
-        </div>
-      )}
     </div>
   )
 })

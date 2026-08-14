@@ -1,7 +1,8 @@
 /**
  * ChatGPT-style report artifacts: small title cards in the conversation open a
- * right-hand report panel with multi-report tabs and a draggable width.
- * @module
+ * right-hand report panel with multi-report tabs, search, scroll memory, and a
+ * draggable width.
+ * @module @deepseek-ai/dsh-client-ui-report-panel/client/report-artifact
  */
 
 import { useMemo, useRef, useState, useSyncExternalStore } from 'react'
@@ -222,7 +223,7 @@ export function useReportArtifact(): ReportArtifactState & {
 /**
  * The small title card in the conversation. Clicking it opens the right-hand
  * panel (or switches to that report's tab).
- * @param props - report title, html, and the localized hint label.
+ * @param props - report title, html, multi-document payload, and the hint label.
  * @returns the card button.
  */
 export function ReportCardBox({
@@ -267,9 +268,9 @@ function PanelDragHandle() {
 }
 
 /**
- * The right-hand report panel with tabs and a draggable width. Renders nothing
- * until a card opens an artifact.
- * @param props - localized labels.
+ * The right-hand report panel with tabs, search, scroll memory, and a
+ * draggable width. Renders nothing until a card opens an artifact.
+ * @param props - localized labels and the ask-in-chat bridge.
  * @returns the panel, or null when no artifact is open.
  */
 export function ReportArtifactPanel({
@@ -373,7 +374,7 @@ export function ReportArtifactPanel({
 /**
  * In-report search: a query box that drives the frame bridge. The box is
  * remounted per tab (keyed by the parent), so search state resets on switch.
- * @param props - labels, the current search request, and the search setter.
+ * @param props - labels, the current search request, and the result counter.
  * @returns the search row.
  */
 function ReportSearchBox({

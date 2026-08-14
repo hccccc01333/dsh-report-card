@@ -1,11 +1,11 @@
 /**
- * Report-card extraction for the core conversation renderer: reads a validated
- * `card: 'report'` result view off a tool-call Chat node. Rendering happens at
- * the turn tail (below the assistant reply), fully outside the tool-call tree.
- * @module
+ * Report-card extraction for the `card: 'report'` render intent: reads a
+ * validated result view off a tool-call Chat node. The panel plugin renders
+ * the card at the turn tail, fully outside the tool-call tree.
+ * @module @deepseek-ai/dsh-client-ui-report-panel/client/report-card
  */
 
-import type { ChatNode } from '../contract/chat-nodes.ts'
+import type { ChatNode } from '@deepseek-ai/dsh-client-ui-conversation/client'
 
 /** One validated report-card payload carried by a tool-call node result view. */
 export interface ReportCardViewPayload {

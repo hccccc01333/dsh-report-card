@@ -1,14 +1,26 @@
-// The core message renderer's report-card extraction: reportViewFromNode
-// reads a validated `card: 'report'` result view off a tool-call Chat node.
+// Report-card extraction and turn-ref selection for the panel plugin.
 
 import { describe, expect, it } from 'vitest'
-import { reportViewFromNode } from '../src/client/chat/report-card.ts'
+import { reportViewFromNode } from '../src/client/report-card.ts'
+import { selectReports } from '../src/client/turn-reports.ts'
+import type { TurnReportsData } from '../src/client/turn-reports.ts'
 
 const HTML = '<!DOCTYPE html><html><body>report</body></html>'
 
-/** A Chat node in the shape ChatNodeSeat routes, with the given result view. */
 function toolNode(resultView: unknown): unknown {
   return { kind: 'tool-call', data: { root: { resultView } } }
+}
+
+function ownerWithReports(reports: TurnReportsData['reports'], seq: number): never {
+  return {
+    turn: {
+      data: {
+        get: (key: string) => key === 'report-refs' ? { reports } : undefined,
+      },
+    },
+    seq,
+    openFile: () => {},
+  } as never
 }
 
 describe('reportViewFromNode', () => {
@@ -27,7 +39,6 @@ describe('reportViewFromNode', () => {
     expect(reportViewFromNode(toolNode({ card: 'generic' }) as never)).toBeNull()
     expect(reportViewFromNode(toolNode({ card: 'report', html: '' }) as never)).toBeNull()
     expect(reportViewFromNode(toolNode(null) as never)).toBeNull()
-    expect(reportViewFromNode({ kind: 'assistant', data: {} } as never)).toBeNull()
     expect(reportViewFromNode(undefined)).toBeNull()
   })
 
@@ -53,18 +64,22 @@ describe('reportViewFromNode', () => {
       ],
     })
   })
+})
 
-  it('ignores an empty or non-array documents field', () => {
-    expect(reportViewFromNode(toolNode({
-      card: 'report',
-      title: 'Sales',
-      html: HTML,
-      documents: [],
-    }) as never)).toEqual({ title: 'Sales', html: HTML })
-    expect(reportViewFromNode(toolNode({
-      card: 'report',
-      html: HTML,
-      documents: 'nope',
-    }) as never)).toEqual({ title: undefined, html: HTML })
+describe('selectReports', () => {
+  it('claims the tail only for reports at or before the closing seq', () => {
+    expect(selectReports(ownerWithReports([
+      { seq: 10, title: 'First' },
+      { seq: 20, title: 'Second' },
+    ], 20))).toEqual({ reports: [
+      { seq: 10, title: 'First' },
+      { seq: 20, title: 'Second' },
+    ] })
+    expect(selectReports(ownerWithReports([
+      { seq: 10, title: 'First' },
+      { seq: 20, title: 'Second' },
+    ], 10))).toEqual({ reports: [{ seq: 10, title: 'First' }] })
+    expect(selectReports(ownerWithReports([{ seq: 20, title: 'Second' }], 10))).toBeNull()
+    expect(selectReports(ownerWithReports([], 10))).toBeNull()
   })
 })

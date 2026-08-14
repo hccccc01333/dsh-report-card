@@ -386,9 +386,7 @@ export function apply(ctx: Context): void {
     inject: (sessionId: SessionId, actions: BoundActions<typeof chatStore>): ChatViewInjected => {
       const conversation = concreteConversation(ctx)
       const scoped = scopedConversation(sessions, sessionId)
-      const shell = inputHub.shell(sessionId)
       return {
-        inputActions: shell.actions,
         openDetails: (target) => {
           actions.select(target)
           layout.openDetails()

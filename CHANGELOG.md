@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.20.0] - 2026-08-14
+
+- **Panel plugin extraction**: the report card + right-hand panel moved out of
+  `dsh-client-ui-conversation` into a standalone client plugin
+  `@deepseek-ai/dsh-client-ui-report-panel`. `ui-conversation` is back to the
+  upstream baseline; the plugin contributes the turn-tail card entry and the
+  composer-dock panel entry through public slots.
+- The plugin is mounted through the web-app browser roster, so hosts can
+  include or remove the surface by composing the entry; the `card: 'report'`
+  protocol and `ReportBlock` renderer stay in the core packages.
+- All panel features carry over unchanged: in-report search, per-tab scroll
+  memory, minimize, multi-document (batch) tabs with index links, and
+  ask-in-chat.
+
 ## [0.19.0] - 2026-08-14
 
 - In-report search: the panel search box drives an in-frame bridge that finds,

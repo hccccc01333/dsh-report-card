@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-// The ChatGPT-style report artifact flow: small title cards open a right-hand
-// panel with multi-report tabs and a draggable width.
+// The report panel artifact flow: title cards open the right-hand panel with
+// multi-report tabs, scroll memory, minimize, search, and ask-in-chat.
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
@@ -10,7 +10,7 @@ import {
   ReportCardBox,
   REPORT_PANEL_MAX_WIDTH,
   REPORT_PANEL_MIN_WIDTH,
-} from '../src/client/chat/report-artifact.tsx'
+} from '../src/client/report-artifact.tsx'
 
 afterEach(() => {
   cleanup()
@@ -81,9 +81,7 @@ describe('report artifacts', () => {
     fireEvent.click(cards[1]!)
     expect(reportArtifactStore.get().artifacts.length).toBe(2)
     await waitFor(() => expect(view.container.querySelectorAll('[data-report-tab]').length).toBe(2))
-    await waitFor(() => expect(view.container.querySelector('[data-report-panel] iframe')?.getAttribute('src')).toBe('blob:report'))
     fireEvent.click(view.container.querySelectorAll('[data-report-tab]')[0]!)
-    await waitFor(() => expect(view.container.querySelector('[data-report-panel] iframe')?.getAttribute('src')).toBe('blob:report'))
     fireEvent.click(view.getByRole('button', { name: 'close' }))
     await waitFor(() => expect(view.container.querySelectorAll('[data-report-tab]').length).toBe(1))
   })

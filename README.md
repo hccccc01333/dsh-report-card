@@ -6,6 +6,13 @@
 
 ## What this fork adds
 
+- `packages/client/ui-report-panel` - a standalone client plugin
+  (`@deepseek-ai/dsh-client-ui-report-panel`) that contributes the report
+  artifact surface through public ui-conversation slots: the turn-tail card
+  and the right-hand panel (tabs, search, scroll memory, minimize,
+  multi-document tabs, ask-in-chat). The fork's `ui-conversation` stays at the
+  upstream baseline; the panel is an opt-in composition entry.
+
 - `packages/core/tools/src/presentation.ts` — new `ReportCallView` /
   `ReportResultView` (`card: 'report'`, carrying a self-contained HTML
   document), wired into the `ToolCallView` / `ToolResultView` unions. The wire
