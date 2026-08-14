@@ -5,11 +5,13 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/react'
-import type { RunningToolCall, ToolResultNode } from '@deepseek-ai/dsh-client-runtime/client'
+import type { ConversationSnapshot, RunningToolCall, ToolResultNode } from '@deepseek-ai/dsh-client-runtime/client'
 import type { ToolResultView } from '@deepseek-ai/dsh-api-remotes/client'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
 import { zh } from '@deepseek-ai/dsh-client-ui-conversation/src/client/locales.ts'
+import type { ToolTreeProps } from '../src/client/contract/slots.ts'
+import { ToolCallTree } from '../src/client/tool/ToolCallTree.tsx'
 import { GenericToolCard, type GenericToolCardProps } from '../src/client/tool/toolviews/GenericToolCard.tsx'
 
 afterEach(cleanup)
@@ -59,5 +61,33 @@ describe('chat row report card (GenericToolCard)', () => {
     fireEvent.click(view.container.querySelector('[data-expandable]')!)
     // The report frame leaves the DOM once the row is closed.
     expect(view.container.querySelector('iframe')).toBeNull()
+  })
+
+  it('renders the report as a standalone block below the tool row', () => {
+    const block = settledReport()
+    const snapshot = {} as ConversationSnapshot
+    const useSession = ((selector: (value: ConversationSnapshot) => unknown) => selector(snapshot)) as ToolTreeProps['useSession']
+    const renderSlot = ((_key: string, _owner: object, options?: { fallback?: React.ReactNode }) =>
+      options?.fallback ?? null) as unknown as ToolTreeProps['renderSlot']
+    const view = render(<ToolCallTree {...{
+      useSession,
+      renderSlot,
+      node: {
+        key: `tool:${block.callId}`,
+        kind: 'tool-call',
+        id: block.callId,
+        target: 'chat',
+        anchorSeq: block.seq,
+        location: { kind: 'session' },
+        visibility: 'visible',
+        data: { root: block },
+      },
+      openFile: vi.fn(),
+      inspectCall: vi.fn(),
+      forkAt: vi.fn(),
+      fileMentions: vi.fn(),
+      t,
+    } as unknown as ToolTreeProps} />)
+    expect(view.container.querySelector('[data-report-standalone] iframe')?.getAttribute('srcdoc')).toBe(REPORT_HTML)
   })
 })

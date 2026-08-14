@@ -1,8 +1,10 @@
 /** Root/subcall Tool composition with one keyed atomic dispatch path. */
 import { memo, useMemo, type ReactNode } from 'react'
+import { ReportBlock } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ToolCallBlock } from '@deepseek-ai/dsh-client-runtime/client'
 import type { ToolCallOwnerProps, ToolTreeProps } from '../contract/slots.ts'
 import { GenericToolCard } from './toolviews/GenericToolCard.tsx'
+import { reportCardModel } from './models/report-card-model.ts'
 import css from './ToolCallTree.module.css'
 
 /** Resolve a Tool call's wire name from either lifecycle form. */
@@ -28,6 +30,7 @@ const ToolCall = memo(function ToolCall({
     cwd,
     inspect: () => { inspectCall(callId) },
   }), [callId, toolName, block, openFile, cwd, inspectCall])
+  const report = reportCardModel(block)
   return (
     <div
       className={css.callRow}
@@ -39,6 +42,11 @@ const ToolCall = memo(function ToolCall({
         entryKey: toolName,
         fallback: <GenericToolCard {...owner} t={t} />,
       })}
+      {report !== null && (
+        <div className={css.reportStandalone} data-report-standalone>
+          <ReportBlock {...report.card} />
+        </div>
+      )}
       {children}
     </div>
   )

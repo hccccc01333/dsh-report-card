@@ -10,3 +10,8 @@
   padding-left: 8px;
   border-left: 1px solid var(--dsw-alias-border-l2);
 }
+/* A completed report renders as its own full-width block below the tool row,
+   ChatGPT-artifact style, so it is not hidden inside the collapsed row. */
+.reportStandalone {
+  margin: 10px 0 2px;
+}
