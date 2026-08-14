@@ -39,7 +39,9 @@ export type {
 } from './SearchBlock.tsx'
 export { WebBlock } from './WebBlock.tsx'
 export type { WebBlockProps, WebSearchBlockProps, WebFetchBlockProps, WebSourceView } from './WebBlock.tsx'
-export { ReportBlock } from './ReportBlock.tsx'
+export {
+  ReportBlock, applyReportHeightMessage, REPORT_DEFAULT_HEIGHT, REPORT_HEIGHT_MESSAGE, REPORT_MAX_HEIGHT,
+} from './ReportBlock.tsx'
 export type { ReportBlockProps } from './ReportBlock.tsx'
 export { CodeBlock } from './markdown/CodeBlock.tsx'
 export type { CodeBlockProps } from './markdown/CodeBlock.tsx'

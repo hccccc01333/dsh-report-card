@@ -5,10 +5,31 @@
   margin: 12px 0;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .title {
   font: var(--dsw-font-xs-13);
   font-weight: 600;
   color: var(--dsw-alias-label-primary);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.openButton {
+  background: var(--dsw-alias-markdown-code-block-banner);
+  border: 1px solid var(--dsw-alias-markdown-code-block);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font: var(--dsw-font-xs-13);
+  color: var(--dsw-alias-label-secondary);
 }
 
 .frame {

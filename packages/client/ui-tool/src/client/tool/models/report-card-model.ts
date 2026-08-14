@@ -12,6 +12,9 @@
 
 import type { ToolCallBlock } from './tool-call-model.ts'
 
+/** Upper bound for inline report HTML, guarding the row against huge payloads. */
+export const REPORT_HTML_MAX_BYTES = 5 * 1024 * 1024
+
 /**
  * The {@link ReportBlock} props this derivation owns. Held as a nested object
  * (`card`) so a render site spreads exactly the primitive's own surface.
@@ -27,8 +30,8 @@ export interface ReportCardModel {
  * Derive the report-card props for a tool call, or null when this call is not
  * a report card and belongs on the generic path. `card` and `html` ride the
  * untrusted wire frame, so a version mismatch or loose producer with a
- * non-string or empty `html` selects the generic path rather than rendering an
- * empty frame.
+ * non-string, empty, or oversized `html` (or a non-string `title`) selects the
+ * generic path rather than rendering a broken or oversized frame.
  * @param block - RunningToolCall or ToolResultNode off the snapshot caches.
  * @returns the report-card props, or null for the generic path.
  */
@@ -37,9 +40,13 @@ export function reportCardModel(block: ToolCallBlock): ReportCardModel | null {
   if (!('kind' in block)) return null
   const result = block.resultView?.card === 'report' ? block.resultView : null
   if (result === null) return null
-  // `html` rides the untrusted wire frame; a missing or empty document would
-  // render a blank frame, so select the generic path instead.
+  // `html` and `title` ride the untrusted wire frame; a missing or empty
+  // document would render a blank frame, an oversized one would bloat the row,
+  // and a non-string title would crash the header, so select the generic path
+  // instead.
   if (typeof result.html !== 'string' || result.html === '') return null
+  if (result.html.length > REPORT_HTML_MAX_BYTES) return null
+  if (result.title !== undefined && typeof result.title !== 'string') return null
   return {
     title: result.title,
     card: result.title === undefined ? { html: result.html } : { html: result.html, title: result.title },

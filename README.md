@@ -13,9 +13,12 @@
 - `packages/client/ui-primitives/src/ReportBlock.tsx` — sandboxed inline
   renderer: the report HTML is displayed in an `<iframe sandbox="allow-scripts">`
   (no same-origin), so report scripts can run but cannot touch the host page.
+  The frame auto-resizes via a `postMessage` height contract
+  (`dsh-report-height`) and can open the report in a new tab.
 - `packages/client/ui-tool` — `reportCardModel` derivation plus render wiring
-  in the chat tool row and the details panel; malformed wire payloads fall
-  back to the generic card instead of crashing.
+  in the chat tool row and the details panel; malformed wire payloads (bad
+  `title`, empty or >5MB `html`) fall back to the generic card instead of
+  crashing.
 - `demo/report-card-demo` — a demo tool that emits the card.
 
 ## Try the demo

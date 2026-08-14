@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { RunningToolCall, ToolResultNode } from '@deepseek-ai/dsh-client-runtime/client'
 import type { ToolResultView } from '@deepseek-ai/dsh-api-remotes/client'
-import { reportCardModel } from '../src/client/tool/models/report-card-model.ts'
+import { REPORT_HTML_MAX_BYTES, reportCardModel } from '../src/client/tool/models/report-card-model.ts'
 
 const REPORT_HTML = '<!DOCTYPE html><html><body>ok</body></html>'
 
@@ -71,5 +71,10 @@ describe('reportCardModel', () => {
     expect(reportCardModel(settledReport({ resultView: { card: 'terminal', output: 'x' } }))).toBeNull()
     // Empty wire HTML would render a blank frame; select the generic path.
     expect(reportCardModel(settledReport({ resultView: reportResult({ html: '' }) }))).toBeNull()
+  })
+
+  it('rejects non-string titles and oversized html from the wire', () => {
+    expect(reportCardModel(settledReport({ resultView: reportResult({ title: 42 as unknown as string }) }))).toBeNull()
+    expect(reportCardModel(settledReport({ resultView: reportResult({ html: 'x'.repeat(REPORT_HTML_MAX_BYTES + 1) }) }))).toBeNull()
   })
 })
