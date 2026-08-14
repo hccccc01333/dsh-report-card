@@ -3578,6 +3578,14 @@ export const TYPE_API: readonly TypeApiEntry[] = [
     declaration: 'export interface RedactedSecret {\n    path: string[];\n    set: boolean;\n}',
   },
   {
+    name: 'ReportCallView',
+    declaration: 'export interface ReportCallView {\n    card: \'report\';\n    title: string;\n    locations?: FileLocation[];\n}',
+  },
+  {
+    name: 'ReportResultView',
+    declaration: 'export interface ReportResultView {\n    card: \'report\';\n    title?: string;\n    html: string;\n}',
+  },
+  {
     name: 'RequestContext',
     declaration: 'export interface RequestContext {\n    provider: string;\n    model: string;\n    contextWindow?: number;\n}',
   },
@@ -4347,7 +4355,7 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   },
   {
     name: 'ToolCallView',
-    declaration: 'export type ToolCallView = GenericCallView | TerminalCallView | DiffCallView;',
+    declaration: 'export type ToolCallView = GenericCallView | TerminalCallView | DiffCallView | ReportCallView;',
   },
   {
     name: 'ToolDefinition',
@@ -4431,7 +4439,7 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   },
   {
     name: 'ToolResultView',
-    declaration: 'export type ToolResultView = GenericResultView | TerminalResultView | DiffResultView | SearchResultView | ReadResultView | WebResultView;',
+    declaration: 'export type ToolResultView = GenericResultView | TerminalResultView | DiffResultView | SearchResultView | ReadResultView | WebResultView | ReportResultView;',
   },
   {
     name: 'ToolRunContext',
