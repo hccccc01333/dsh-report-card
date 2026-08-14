@@ -18,6 +18,7 @@ export interface ReportArtifact {
 export interface ReportArtifactLabels {
   cardHint: string
   closePanel: string
+  refresh: string
   expand: string
   collapse: string
   open: string
@@ -30,24 +31,35 @@ export interface ReportArtifactLabels {
 interface ReportArtifactContextValue {
   artifact: ReportArtifact | null
   open: (artifact: ReportArtifact) => void
+  sync: (artifact: ReportArtifact) => void
   close: () => void
 }
 
 const ReportArtifactContext = createContext<ReportArtifactContextValue | null>(null)
 
-/** Read the artifact store; must be called inside {@link ReportArtifactProvider}. */
+/** No-op store for render sites without a provider. */
+const DEFAULT_ARTIFACT: ReportArtifactContextValue = {
+  artifact: null,
+  open: () => {},
+  sync: () => {},
+  close: () => {},
+}
+
+/** Read the artifact store; falls back to a no-op outside the provider. */
 export function useReportArtifact(): ReportArtifactContextValue {
-  const value = useContext(ReportArtifactContext)
-  if (value === null) throw new Error('useReportArtifact must be used inside ReportArtifactProvider')
-  return value
+  return useContext(ReportArtifactContext) ?? DEFAULT_ARTIFACT
 }
 
 /** Provide the artifact store for one conversation view. */
 export function ReportArtifactProvider({ children }: { children: ReactNode }) {
   const [artifact, setArtifact] = useState<ReportArtifact | null>(null)
   const open = useCallback((next: ReportArtifact) => setArtifact(next), [])
+  // Refresh an already-open panel with a newer report; never auto-opens.
+  const sync = useCallback((next: ReportArtifact) => {
+    setArtifact(previous => previous === null ? previous : next)
+  }, [])
   const close = useCallback(() => setArtifact(null), [])
-  const value = useMemo(() => ({ artifact, open, close }), [artifact, open, close])
+  const value = useMemo(() => ({ artifact, open, sync, close }), [artifact, open, sync, close])
   return <ReportArtifactContext.Provider value={value}>{children}</ReportArtifactContext.Provider>
 }
 
@@ -75,31 +87,36 @@ export function ReportCardBox({ title, html, hint }: { title: string | undefined
  */
 export function ReportArtifactPanel({ labels }: { labels: ReportArtifactLabels }) {
   const { artifact, close } = useReportArtifact()
+  const [reload, setReload] = useState(0)
   if (artifact === null) return null
   return (
-    <div className={css.overlay} data-report-panel role="dialog" aria-label={artifact.title ?? 'Report'}>
-      <div className={css.panel}>
-        <div className={css.panelHeader}>
-          <span className={css.panelTitle}>{artifact.title ?? 'HTML Report'}</span>
+    <aside className={css.panel} data-report-panel aria-label={artifact.title ?? 'Report'}>
+      <div className={css.panelHeader}>
+        <span className={css.panelTitle}>{artifact.title ?? 'HTML Report'}</span>
+        <div className={css.panelActions}>
+          <button type="button" className={css.closeButton} onClick={() => setReload(value => value + 1)}>
+            {labels.refresh}
+          </button>
           <button type="button" className={css.closeButton} onClick={close}>
             {labels.closePanel}
           </button>
         </div>
-        <div className={css.panelBody}>
-          <ReportBlock
-            title={artifact.title}
-            html={artifact.html}
-            defaultExpanded
-            maxHeight={8192}
-            expandLabel={labels.expand}
-            collapseLabel={labels.collapse}
-            openLabel={labels.open}
-            copyLabel={labels.copy}
-            copiedLabel={labels.copied}
-            downloadLabel={labels.download}
-          />
-        </div>
       </div>
-    </div>
+      <div className={css.panelBody}>
+        <ReportBlock
+          key={reload}
+          title={artifact.title}
+          html={artifact.html}
+          defaultExpanded
+          maxHeight={8192}
+          expandLabel={labels.expand}
+          collapseLabel={labels.collapse}
+          openLabel={labels.open}
+          copyLabel={labels.copy}
+          copiedLabel={labels.copied}
+          downloadLabel={labels.download}
+        />
+      </div>
+    </aside>
   )
 }

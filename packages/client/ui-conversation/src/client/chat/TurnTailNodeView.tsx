@@ -1,10 +1,10 @@
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ChatNode } from '../contract/chat-nodes.ts'
 import type { ChatNodeViewProps, TurnTailOwnerProps } from '../contract/slots.ts'
 import { MessageIconActions } from './MessageIconActions.tsx'
 import { assistantText } from './turn-assistant.ts'
-import { ReportCardBox } from './report-artifact.tsx'
+import { ReportCardBox, useReportArtifact } from './report-artifact.tsx'
 import { reportViewFromNode } from './report-card.ts'
 import css from './TurnTailNodeView.module.css'
 
@@ -30,6 +30,11 @@ export const TurnTailNodeView = memo(function TurnTailNodeView({
     }
     return null
   })
+  // A newer report replaces the content of an already-open panel immediately.
+  const { sync } = useReportArtifact()
+  useEffect(() => {
+    if (reportView !== null) sync(reportView)
+  }, [reportView, sync])
   const turn = node.location.kind === 'turn' || node.location.kind === 'step'
     ? node.location.turn
     : undefined

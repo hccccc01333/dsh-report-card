@@ -31,22 +31,15 @@
   color: var(--dsw-alias-label-secondary);
 }
 
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  display: flex;
-  justify-content: flex-end;
-  background: rgba(0, 0, 0, 0.18);
-}
-
 .panel {
-  width: min(720px, 92vw);
+  width: min(520px, 40vw);
+  min-width: 320px;
   height: 100%;
+  flex-shrink: 0;
+  border-left: 1px solid var(--dsw-alias-markdown-code-block);
   background: var(--dsw-alias-markdown-code-block-banner, #ffffff);
   display: flex;
   flex-direction: column;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
 }
 
 .panelHeader {
@@ -64,6 +57,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.panelActions {
+  display: flex;
+  gap: 8px;
 }
 
 .closeButton {

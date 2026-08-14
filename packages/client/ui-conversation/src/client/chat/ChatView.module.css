@@ -6,9 +6,16 @@
 .root {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   min-height: 0;
   flex: 1 1 auto;
+}
+
+.conversation {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .scroll {

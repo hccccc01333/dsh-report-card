@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0] - 2026-08-14
+
+- The report artifact opens as an inline right-hand pane in the same layout
+  plane: the conversation is pushed left instead of an overlay window.
+- The panel has a Refresh action and auto-replaces its content when the model
+  produces a newer report in the conversation (e.g. after an edit prompt).
+
 ## [0.10.0] - 2026-08-14
 
 - ChatGPT-style report artifacts: the conversation shows a small title card;

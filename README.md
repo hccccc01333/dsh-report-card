@@ -25,8 +25,10 @@
   full HTML and Collapse to shrink it back. The standalone card renders in the
   core conversation renderer at the turn tail (the bottom of the message),
   fully outside the tool-call tree. Clicking the card opens a right-side
-  application panel showing the full report; controls follow the UI language
-  (zh/en).
+  application panel showing the full report; the panel shares the same layout
+  plane (the conversation is pushed left), includes a Refresh action, and
+  auto-replaces its content when a newer report arrives. Controls follow the
+  UI language (zh/en).
 - `demo/report-card-demo` — a demo tool that emits the card.
 - `demo/report-html-integration` — mounts the
   [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so
