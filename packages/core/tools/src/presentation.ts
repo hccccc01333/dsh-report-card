@@ -170,6 +170,21 @@ export interface ReportResultView {
   title?: string
   /** Self-contained HTML document to render in a sandboxed frame. */
   html: string
+  /**
+   * Optional multi-document delivery (e.g. a batch of reports): each entry
+   * renders as its own tab, with `name` used to match relative `.html` links.
+   */
+  documents?: ReportDocumentView[]
+}
+
+/** One document of a multi-document report delivery. */
+export interface ReportDocumentView {
+  /** Delivery-relative file name (e.g. `index.html`); link matching key. */
+  name: string
+  /** Tab label for the document. */
+  title: string
+  /** Self-contained HTML document to render in a sandboxed frame. */
+  html: string
 }
 
 /**
