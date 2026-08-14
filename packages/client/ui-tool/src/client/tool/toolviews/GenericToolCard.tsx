@@ -71,7 +71,6 @@ export function GenericToolCard({ toolName, block, cwd, openFile, inspect, t }: 
       search={search}
       web={web}
       report={report}
-      defaultExpanded={report !== null}
       state={state}
       filePath={model.filePath}
       onOpenFile={singleFile ? openFile : undefined}

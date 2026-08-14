@@ -29,6 +29,12 @@ export interface ReportBlockProps {
   initialHeight?: number | undefined
   /** Upper bound for report-reported heights; defaults to {@link REPORT_MAX_HEIGHT}. */
   maxHeight?: number | undefined
+  /** Start with the full report open instead of the compact card preview. */
+  defaultExpanded?: boolean | undefined
+  /** Expand button label; defaults to `Expand`. */
+  expandLabel?: string | undefined
+  /** Collapse button label; defaults to `Collapse`. */
+  collapseLabel?: string | undefined
 }
 
 /** Default frame height before a report reports its own height. */
@@ -36,6 +42,9 @@ export const REPORT_DEFAULT_HEIGHT = 480
 
 /** Upper bound for report-reported heights, so a buggy report cannot stretch the row. */
 export const REPORT_MAX_HEIGHT = 1200
+
+/** Compact preview height for the collapsed card view. */
+export const REPORT_PREVIEW_HEIGHT = 180
 
 /** Initial height for the details-panel reading surface. */
 export const REPORT_DETAILS_INITIAL_HEIGHT = 720
@@ -88,10 +97,14 @@ export function ReportBlock({
   downloadLabel = 'Download HTML',
   initialHeight = REPORT_DEFAULT_HEIGHT,
   maxHeight = REPORT_MAX_HEIGHT,
+  defaultExpanded = false,
+  expandLabel = 'Expand',
+  collapseLabel = 'Collapse',
 }: ReportBlockProps) {
   const frameRef = useRef<HTMLIFrameElement>(null)
   const [height, setHeight] = useState(initialHeight)
   const [copied, setCopied] = useState(false)
+  const [open, setOpen] = useState(defaultExpanded === true)
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       // Only the report inside THIS frame may size it.
@@ -136,11 +149,20 @@ export function ReportBlock({
     link.click()
     setTimeout(() => URL.revokeObjectURL(url), 60_000)
   }
+  const frameHeight = open ? Math.max(height, initialHeight) : REPORT_PREVIEW_HEIGHT
   return (
-    <div className={clsx(css.root, className)}>
+    <div className={clsx(css.root, className)} data-report-open={open}>
       <div className={css.header}>
         {title !== undefined && title !== '' && <div className={css.title}>{title}</div>}
         <div className={css.actions}>
+          <button
+            type="button"
+            className={css.actionButton}
+            aria-expanded={open}
+            onClick={() => setOpen(value => !value)}
+          >
+            {open ? collapseLabel : expandLabel}
+          </button>
           <button type="button" className={css.actionButton} onClick={openInNewTab}>
             {openLabel}
           </button>
@@ -152,14 +174,25 @@ export function ReportBlock({
           </button>
         </div>
       </div>
-      <iframe
-        ref={frameRef}
-        className={css.frame}
-        style={{ height }}
-        title={title ?? 'report'}
-        sandbox="allow-scripts"
-        srcDoc={html}
-      />
+      <div className={css.frameWrap} style={{ height: frameHeight }}>
+        <iframe
+          ref={frameRef}
+          className={css.frame}
+          title={title ?? 'report'}
+          sandbox="allow-scripts"
+          srcDoc={html}
+        />
+        {!open && (
+          <button
+            type="button"
+            className={css.previewOverlay}
+            aria-label={expandLabel}
+            onClick={() => setOpen(true)}
+          >
+            {expandLabel}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

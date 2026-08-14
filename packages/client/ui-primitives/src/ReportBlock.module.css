@@ -37,10 +37,29 @@
   color: var(--dsw-alias-label-secondary);
 }
 
+.frameWrap {
+  position: relative;
+  width: 100%;
+}
+
 .frame {
   width: 100%;
-  height: 480px;
+  height: 100%;
   border: 1px solid var(--dsw-alias-markdown-code-block);
   border-radius: 12px;
   background: #ffffff;
+}
+
+.previewOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--dsw-alias-label-secondary);
+  border: none;
+  cursor: pointer;
+  font: var(--dsw-font-xs-13);
+  font-weight: 600;
 }

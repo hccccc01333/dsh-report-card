@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0] - 2026-08-14
+
+- Report cards render as ChatGPT-style standalone cards: a compact sandboxed
+  preview by default, an Expand action to view the full report (postMessage
+  auto-height still applies), and Collapse to shrink it back. Open / Copy /
+  Download stay on the card; the tool row stays a compact one-liner and the
+  details panel opens full-height.
+
+## [0.6.0] - 2026-08-14
+
+- Report cards render as standalone full-width blocks below the tool row,
+  never hidden inside the collapsed tool call.
+
 ## [0.5.0] - 2026-08-14
 
 - Report cards in the chat row expand by default: the inline report is visible

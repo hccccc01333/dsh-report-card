@@ -20,8 +20,9 @@
 - `packages/client/ui-tool` — `reportCardModel` derivation plus render wiring
   in the chat tool row and the details panel; malformed wire payloads (bad
   `title`, empty or >5MB `html`) fall back to the generic card instead of
-  crashing. Report cards start expanded, so the inline report shows up in the
-  conversation immediately.
+  crashing. Report cards show up in the conversation immediately as standalone
+  ChatGPT-style cards: a compact preview with an Expand action to view the
+  full HTML and Collapse to shrink it back.
 - `demo/report-card-demo` — a demo tool that emits the card.
 - `demo/report-html-integration` — mounts the
   [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so

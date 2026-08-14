@@ -69,6 +69,7 @@ export function ToolDetails({ block, cwd, t }: ToolDetailsContentProps) {
         className={css.cardBody}
         initialHeight={REPORT_DETAILS_INITIAL_HEIGHT}
         maxHeight={REPORT_DETAILS_MAX_HEIGHT}
+        defaultExpanded
       />
     )
   }

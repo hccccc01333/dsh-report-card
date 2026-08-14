@@ -48,6 +48,7 @@ export {
   REPORT_DETAILS_MAX_HEIGHT,
   REPORT_HEIGHT_MESSAGE,
   REPORT_MAX_HEIGHT,
+  REPORT_PREVIEW_HEIGHT,
 } from './ReportBlock.tsx'
 export type { ReportBlockProps } from './ReportBlock.tsx'
 export { CodeBlock } from './markdown/CodeBlock.tsx'
