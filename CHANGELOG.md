@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0] - 2026-08-14
+
+- The right-hand report panel supports multiple reports as tabs (click a card
+  to add/switch, click a tab to switch, close removes the active one) and a
+  draggable width (drag the panel's left edge, 320-800px). The conversation
+  reserves the current panel width.
+
 ## [0.14.0] - 2026-08-14
 
 - The report inside the right panel fills the available panel height
