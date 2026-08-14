@@ -190,6 +190,3 @@
 .toBottom:hover {
   background: var(--dsw-alias-button-floating-hover);
 }
-.reportCard {
-  margin: 4px 0 0;
-}

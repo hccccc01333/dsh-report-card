@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0] - 2026-08-14
+
+- Report cards now render at the **turn tail** (the bottom of the
+  conversation), fully outside the tool-call tree: after the assistant reply
+  completes, the last `card: 'report'` of the turn appears as a standalone
+  ChatGPT-style card (compact preview + Expand/Collapse).
+
 ## [0.8.0] - 2026-08-14
 
 - Report-card rendering moves into the core conversation renderer

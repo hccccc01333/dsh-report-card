@@ -2,7 +2,7 @@
 // reads a validated `card: 'report'` result view off a tool-call Chat node.
 
 import { describe, expect, it } from 'vitest'
-import { reportViewFromNode } from '../src/client/chat/ChatNodeSeat.tsx'
+import { reportViewFromNode } from '../src/client/chat/report-card.ts'
 
 const HTML = '<!DOCTYPE html><html><body>report</body></html>'
 

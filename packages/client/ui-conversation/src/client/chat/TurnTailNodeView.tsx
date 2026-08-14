@@ -1,8 +1,11 @@
 import { memo } from 'react'
+import { ReportBlock } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
+import type { ChatNode } from '../contract/chat-nodes.ts'
 import type { ChatNodeViewProps, TurnTailOwnerProps } from '../contract/slots.ts'
 import { MessageIconActions } from './MessageIconActions.tsx'
 import { assistantText } from './turn-assistant.ts'
+import { reportViewFromNode } from './report-card.ts'
 import css from './TurnTailNodeView.module.css'
 
 type TurnTailNodeViewProps = ChatNodeViewProps<'turn-tail'>
@@ -15,6 +18,18 @@ export const TurnTailNodeView = memo(function TurnTailNodeView({
   const data = node.data
   const hasLaterChatNode = useSession(snapshot =>
     snapshot.chat.locations.getTurn(data.turn).at(-1) !== node.key)
+  // The last report card of this turn renders at the very bottom of the
+  // conversation, fully outside the tool-call tree (ChatGPT-artifact style).
+  const reportView = useSession((snapshot) => {
+    const keys = snapshot.chat.locations.getTurn(data.turn)
+    for (let index = keys.length - 1; index >= 0; index -= 1) {
+      const key = keys[index]
+      if (key === undefined) continue
+      const view = reportViewFromNode(snapshot.chat.nodes.get(key) as ChatNode | undefined)
+      if (view !== null) return view
+    }
+    return null
+  })
   const turn = node.location.kind === 'turn' || node.location.kind === 'step'
     ? node.location.turn
     : undefined
@@ -48,6 +63,11 @@ export const TurnTailNodeView = memo(function TurnTailNodeView({
         extraActions={assistantActions}
         t={t}
       />
+      {reportView !== null && (
+        <div className={css.reportCard} data-report-standalone>
+          <ReportBlock title={reportView.title} html={reportView.html} />
+        </div>
+      )}
     </div>
   )
 })
