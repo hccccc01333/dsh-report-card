@@ -37,6 +37,13 @@
   [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so
   its report tools emit the card; verified end to end with a real headless run.
 
+## Demo
+
+![Report card demo](assets/demo-report-card.gif)
+
+Real server, real model round: ask for a report, click the card, and the full
+report opens in an independent right-hand panel.
+
 ## Try the demo
 
 ```sh
