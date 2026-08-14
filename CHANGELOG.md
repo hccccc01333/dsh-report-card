@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0] - 2026-08-14
+
+- Report cards in the chat row expand by default: the inline report is visible
+  in the conversation immediately (ChatGPT-style) instead of hiding behind the
+  collapsed one-line tool row. The Open / Copy / Download actions stay on the
+  card.
+
 ## [0.4.0] - 2026-08-14
 
 - `demo/report-html-integration`: mount dsh-report-html into this fork so its

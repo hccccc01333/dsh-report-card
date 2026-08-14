@@ -93,6 +93,12 @@ export interface ToolRowProps {
    * inline report when present.
    */
   report?: ReportCardModel | null | undefined
+  /**
+   * Start the row expanded. Report cards opt in so the inline report is
+   * visible in the conversation immediately (ChatGPT-style), instead of hiding
+   * behind the collapsed one-line row.
+   */
+  defaultExpanded?: boolean | undefined
   state: ToolRowState
   /**
    * Filesystem path from tool args; when set with onOpenFile, the summary
@@ -149,12 +155,13 @@ export function ToolRow({
   search,
   web,
   report,
+  defaultExpanded,
   state,
   filePath,
   onOpenFile,
   inspect,
 }: ToolRowProps) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(defaultExpanded === true)
   const terminalBody = terminal ?? null
   const diffBody = diff ?? null
   const readBody = read ?? null
