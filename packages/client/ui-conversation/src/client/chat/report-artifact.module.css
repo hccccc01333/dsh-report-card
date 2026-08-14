@@ -32,14 +32,19 @@
 }
 
 .panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
   width: min(520px, 40vw);
   min-width: 320px;
-  height: 100%;
-  flex-shrink: 0;
+  height: 100vh;
+  z-index: 20;
   border-left: 1px solid var(--dsw-alias-markdown-code-block);
   background: var(--dsw-alias-markdown-code-block-banner, #ffffff);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .panelHeader {

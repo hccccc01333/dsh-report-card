@@ -28,8 +28,9 @@
   application panel showing the full report; the panel shares the same layout
   plane (the conversation is pushed left), includes a Refresh action, and
   auto-replaces its content when a newer report arrives. Controls follow the
-  UI language (zh/en). With the panel open the conversation becomes its own
-  full-height scrollport, so the panel is an independent right-hand space.
+  UI language (zh/en). The panel is fixed to the right side of the viewport
+  (full height, independent scroll) and the conversation reserves its width,
+  so the two are independent parallel spaces.
 - `demo/report-card-demo` — a demo tool that emits the card.
 - `demo/report-html-integration` — mounts the
   [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so

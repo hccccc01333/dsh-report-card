@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0] - 2026-08-14
+
+- The report panel is now fixed to the right side of the viewport
+  (full-height, independent scroll) and the conversation reserves its width so
+  it is pushed left — no dependence on the layout scroll host, so the panel
+  never scrolls away and never collapses in height.
+
 ## [0.12.0] - 2026-08-14
 
 - Split-view fix: when the report panel is open, the conversation becomes its

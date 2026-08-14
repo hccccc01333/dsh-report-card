@@ -26,13 +26,6 @@ const FOLLOW_THRESHOLD = 24
 
 /** Active column host when present; otherwise the view-local scroller. */
 function scrollerOf(from: HTMLElement): HTMLElement {
-  // Split mode (report panel open) makes the conversation its own scrollport;
-  // otherwise the active conversation column host owns overflow.
-  const split = from.closest('[data-chat-split]')
-  if (split !== null) {
-    const local = split.querySelector('[data-conversation-scroll-local]')
-    return local instanceof HTMLElement ? local : from
-  }
   return (from.closest('[data-conversation-scroll]')) ?? from
 }
 
@@ -376,7 +369,7 @@ export function ChatView({
     <ReportArtifactProvider>
       <div className={split ? `${css.root} ${css.split}` : css.root} data-chat-split={split ? '' : undefined}>
         <div className={css.conversation}>
-          <div ref={listRef} className={css.scroll} data-conversation-scroll-local={split ? '' : undefined}>
+          <div ref={listRef} className={css.scroll}>
             <div ref={columnRef} className={css.column} data-chat-flow="">
               {openState === 'loading' && <div className={css.hint}>{t('chat.loadingHistory')}</div>}
               {openState === 'error' && openError !== null && (
