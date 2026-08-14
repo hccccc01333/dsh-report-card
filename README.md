@@ -14,7 +14,9 @@
   renderer: the report HTML is displayed in an `<iframe sandbox="allow-scripts">`
   (no same-origin), so report scripts can run but cannot touch the host page.
   The frame auto-resizes via a `postMessage` height contract
-  (`dsh-report-height`) and can open the report in a new tab.
+  (`dsh-report-height`), can open the report in a new tab, copy the HTML, or
+  download it as a title-named file. The details panel renders the report as a
+  full-height reading surface (up to 4096px).
 - `packages/client/ui-tool` — `reportCardModel` derivation plus render wiring
   in the chat tool row and the details panel; malformed wire payloads (bad
   `title`, empty or >5MB `html`) fall back to the generic card instead of

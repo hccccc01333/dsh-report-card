@@ -1,5 +1,8 @@
 /** Card-aware output body for the selected Tool call in details. */
-import { DiffBlock, ReadBlock, ReportBlock, SearchBlock, TerminalBlock, WebBlock } from '@deepseek-ai/dsh-client-ui-primitives'
+import {
+  DiffBlock, ReadBlock, ReportBlock, SearchBlock, TerminalBlock, WebBlock,
+  REPORT_DETAILS_INITIAL_HEIGHT, REPORT_DETAILS_MAX_HEIGHT,
+} from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ToolDetailsProps } from '../contract/slots.ts'
 import { diffCardModel } from './models/diff-card-model.ts'
 import { readCardModel } from './models/read-card-model.ts'
@@ -59,7 +62,16 @@ export function ToolDetails({ block, cwd, t }: ToolDetailsContentProps) {
     )
   }
   const report = reportCardModel(block)
-  if (report !== null) return <ReportBlock {...report.card} className={css.cardBody} />
+  if (report !== null) {
+    return (
+      <ReportBlock
+        {...report.card}
+        className={css.cardBody}
+        initialHeight={REPORT_DETAILS_INITIAL_HEIGHT}
+        maxHeight={REPORT_DETAILS_MAX_HEIGHT}
+      />
+    )
+  }
   if (!('kind' in block)) return <div className={css.empty}>{t('details.running')}</div>
   return (
     <pre className={css.code} data-error={block.isError || undefined}>

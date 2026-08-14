@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0] - 2026-08-14
+
+- `ReportBlock`: copy-HTML button with feedback and download-HTML button with a
+  title-derived file name; configurable `initialHeight`/`maxHeight`.
+- Details panel renders the report as a full-height reading surface
+  (720px initial, up to 4096px from the height contract).
+
 ## [0.2.0] - 2026-08-14
 
 - `ReportBlock`: postMessage height contract (`dsh-report-height`) so the

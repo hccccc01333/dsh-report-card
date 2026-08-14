@@ -22,7 +22,12 @@
   white-space: nowrap;
 }
 
-.openButton {
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actionButton {
   background: var(--dsw-alias-markdown-code-block-banner);
   border: 1px solid var(--dsw-alias-markdown-code-block);
   border-radius: 6px;

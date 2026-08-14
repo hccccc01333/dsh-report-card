@@ -19,6 +19,16 @@ export interface ReportBlockProps {
   className?: string | undefined
   /** Open-in-new-tab button label; defaults to `Open in new tab`. */
   openLabel?: string | undefined
+  /** Copy-HTML button label; defaults to `Copy HTML`. */
+  copyLabel?: string | undefined
+  /** Copied feedback label; defaults to `Copied`. */
+  copiedLabel?: string | undefined
+  /** Download-HTML button label; defaults to `Download HTML`. */
+  downloadLabel?: string | undefined
+  /** Initial frame height; defaults to {@link REPORT_DEFAULT_HEIGHT}. */
+  initialHeight?: number | undefined
+  /** Upper bound for report-reported heights; defaults to {@link REPORT_MAX_HEIGHT}. */
+  maxHeight?: number | undefined
 }
 
 /** Default frame height before a report reports its own height. */
@@ -27,6 +37,12 @@ export const REPORT_DEFAULT_HEIGHT = 480
 /** Upper bound for report-reported heights, so a buggy report cannot stretch the row. */
 export const REPORT_MAX_HEIGHT = 1200
 
+/** Initial height for the details-panel reading surface. */
+export const REPORT_DETAILS_INITIAL_HEIGHT = 720
+
+/** Upper bound for report-reported heights in the details panel. */
+export const REPORT_DETAILS_MAX_HEIGHT = 4096
+
 /** PostMessage contract a report script may use to size its frame. */
 export const REPORT_HEIGHT_MESSAGE = 'dsh-report-height'
 
@@ -34,14 +50,24 @@ export const REPORT_HEIGHT_MESSAGE = 'dsh-report-height'
  * Resolve the next frame height from one postMessage payload.
  * @param data - the raw message payload from the report frame.
  * @param current - the current frame height.
- * @returns the new height, clamped to {@link REPORT_MAX_HEIGHT}, or the current
- * height when the payload is not a valid height message.
+ * @param maxHeight - the upper clamp; defaults to {@link REPORT_MAX_HEIGHT}.
+ * @returns the new height, clamped to `maxHeight`, or the current height when
+ * the payload is not a valid height message.
  */
-export function applyReportHeightMessage(data: unknown, current: number): number {
+export function applyReportHeightMessage(data: unknown, current: number, maxHeight: number = REPORT_MAX_HEIGHT): number {
   if (data === null || typeof data !== 'object') return current
   const message = data as { type?: unknown; height?: unknown }
   if (message.type !== REPORT_HEIGHT_MESSAGE || typeof message.height !== 'number') return current
-  return Math.max(120, Math.min(message.height, REPORT_MAX_HEIGHT))
+  return Math.max(120, Math.min(message.height, maxHeight))
+}
+
+/** Derive a file name from a report title, falling back to `report.html`. */
+export function reportFileName(title: string | undefined): string {
+  const base = (title ?? 'report')
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fff]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return `${base === '' ? 'report' : base}.html`
 }
 
 /**
@@ -52,32 +78,79 @@ export function applyReportHeightMessage(data: unknown, current: number): number
  * @param props - title, self-contained HTML, and optional open button label.
  * @returns the report surface.
  */
-export function ReportBlock({ title, html, className, openLabel = 'Open in new tab' }: ReportBlockProps) {
+export function ReportBlock({
+  title,
+  html,
+  className,
+  openLabel = 'Open in new tab',
+  copyLabel = 'Copy HTML',
+  copiedLabel = 'Copied',
+  downloadLabel = 'Download HTML',
+  initialHeight = REPORT_DEFAULT_HEIGHT,
+  maxHeight = REPORT_MAX_HEIGHT,
+}: ReportBlockProps) {
   const frameRef = useRef<HTMLIFrameElement>(null)
-  const [height, setHeight] = useState(REPORT_DEFAULT_HEIGHT)
+  const [height, setHeight] = useState(initialHeight)
+  const [copied, setCopied] = useState(false)
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       // Only the report inside THIS frame may size it.
       if (event.source !== frameRef.current?.contentWindow) return
       const data = event.data as { type?: unknown; height?: unknown } | null
-      setHeight(previous => applyReportHeightMessage(data, previous))
+      setHeight(previous => applyReportHeightMessage(data, previous, maxHeight))
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
-  }, [])
+  }, [maxHeight])
   const openInNewTab = () => {
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }))
     window.open(url, '_blank', 'noopener')
     // Keep the blob alive long enough for the tab to load, then release it.
     setTimeout(() => URL.revokeObjectURL(url), 60_000)
   }
+  const copyHtml = async () => {
+    try {
+      if (navigator.clipboard?.writeText !== undefined) {
+        await navigator.clipboard.writeText(html)
+      } else {
+        const textarea = document.createElement('textarea')
+        textarea.value = html
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        textarea.remove()
+      }
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      // Clipboard unavailable: leave the button without feedback.
+    }
+  }
+  const downloadHtml = () => {
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = reportFileName(title)
+    link.click()
+    setTimeout(() => URL.revokeObjectURL(url), 60_000)
+  }
   return (
     <div className={clsx(css.root, className)}>
       <div className={css.header}>
         {title !== undefined && title !== '' && <div className={css.title}>{title}</div>}
-        <button type="button" className={css.openButton} onClick={openInNewTab}>
-          {openLabel}
-        </button>
+        <div className={css.actions}>
+          <button type="button" className={css.actionButton} onClick={openInNewTab}>
+            {openLabel}
+          </button>
+          <button type="button" className={css.actionButton} onClick={copyHtml}>
+            {copied ? copiedLabel : copyLabel}
+          </button>
+          <button type="button" className={css.actionButton} onClick={downloadHtml}>
+            {downloadLabel}
+          </button>
+        </div>
       </div>
       <iframe
         ref={frameRef}
