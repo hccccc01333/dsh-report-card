@@ -22,6 +22,9 @@
   `title`, empty or >5MB `html`) fall back to the generic card instead of
   crashing.
 - `demo/report-card-demo` — a demo tool that emits the card.
+- `demo/report-html-integration` — mounts the
+  [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so
+  its report tools emit the card; verified end to end with a real headless run.
 
 ## Try the demo
 

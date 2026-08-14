@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0] - 2026-08-14
+
+- `demo/report-html-integration`: mount dsh-report-html into this fork so its
+  `report_html` / `report_analysis` tools emit `card: 'report'` views; verified
+  end to end with a real headless model run (tool executed, result logged, card
+  reconstructed at display time from the logged args).
+
 ## [0.3.0] - 2026-08-14
 
 - `ReportBlock`: copy-HTML button with feedback and download-HTML button with a
