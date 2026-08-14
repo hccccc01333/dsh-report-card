@@ -22,7 +22,8 @@
   `title`, empty or >5MB `html`) fall back to the generic card instead of
   crashing. Report cards show up in the conversation immediately as standalone
   ChatGPT-style cards: a compact preview with an Expand action to view the
-  full HTML and Collapse to shrink it back.
+  full HTML and Collapse to shrink it back. The standalone card renders in the
+  core conversation renderer (`ChatNodeSeat`), not the tool-view plugin.
 - `demo/report-card-demo` — a demo tool that emits the card.
 - `demo/report-html-integration` — mounts the
   [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so

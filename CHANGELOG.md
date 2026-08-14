@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.0] - 2026-08-14
+
+- Report-card rendering moves into the core conversation renderer
+  (`ChatNodeSeat` in `dsh-client-ui-conversation`): the standalone
+  ChatGPT-style card (compact preview + Expand/Collapse) renders from the
+  message layer itself, independent of the tool-view plugin wiring.
+- Verified against a real `report_analysis` call: the host projects
+  `card: 'report'` (33KB HTML) without throwing, so the wire carries the view.
+
 ## [0.7.0] - 2026-08-14
 
 - Report cards render as ChatGPT-style standalone cards: a compact sandboxed
