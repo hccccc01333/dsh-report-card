@@ -35,7 +35,12 @@
   panel, and the panel width is draggable (320-800px). Reports load through
   blob URLs with an injected in-frame navigation shim, so in-report anchor
   links (table of contents) smooth-scroll to their target without blanking
-  the frame, and the collapsed preview stays scrollable.
+  the frame, and the collapsed preview stays scrollable. The panel searches
+  inside the report (the sandboxed frame is opaque to host Ctrl+F), remembers
+  each tab's scroll offset across switches, and minimizes to a narrow bar
+  without losing the tab set. Batch deliveries open as multi-document tabs
+  with an index page whose links switch reports, and the panel can compose an
+  ask-about-report question into the main conversation.
 - `demo/report-card-demo` — a demo tool that emits the card.
 - `demo/report-html-integration` — mounts the
   [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so

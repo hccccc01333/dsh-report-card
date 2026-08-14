@@ -42,8 +42,14 @@ export type { WebBlockProps, WebSearchBlockProps, WebFetchBlockProps, WebSourceV
 export {
   ReportBlock,
   applyReportHeightMessage,
+  injectReportFrameBridge,
   injectReportAnchorNavigation,
   reportFileName,
+  REPORT_SEARCH_MESSAGE,
+  REPORT_SCROLL_TOP_MESSAGE,
+  REPORT_SCROLL_RESTORE_MESSAGE,
+  REPORT_OPEN_DOCUMENT_MESSAGE,
+  REPORT_SEARCH_RESULT_MESSAGE,
   REPORT_DEFAULT_HEIGHT,
   REPORT_DETAILS_INITIAL_HEIGHT,
   REPORT_DETAILS_MAX_HEIGHT,
@@ -51,7 +57,7 @@ export {
   REPORT_MAX_HEIGHT,
   REPORT_PREVIEW_HEIGHT,
 } from './ReportBlock.tsx'
-export type { ReportBlockProps } from './ReportBlock.tsx'
+export type { ReportBlockProps, ReportSearchRequest, ReportSearchResult } from './ReportBlock.tsx'
 export { CodeBlock } from './markdown/CodeBlock.tsx'
 export type { CodeBlockProps } from './markdown/CodeBlock.tsx'
 export { JsonBlock } from './markdown/JsonBlock.tsx'

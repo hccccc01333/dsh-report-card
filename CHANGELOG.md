@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.19.0] - 2026-08-14
+
+- In-report search: the panel search box drives an in-frame bridge that finds,
+  highlights, and steps through matches (`n/m` counter, Enter/Shift+Enter,
+  Esc clears). Search works inside the sandboxed frame where host Ctrl+F
+  cannot reach.
+- Per-document scroll memory: each tab remembers its scroll offset and
+  restores it on switch; refresh resets to the top.
+- Panel minimize: close collapses the panel into a narrow bar that keeps all
+  tabs and scroll state; the bar offers expand and close-all.
+- Multi-document deliveries: `card: 'report'` gains an optional `documents`
+  payload (`report_batch_analysis` sends every report HTML plus `index.html`);
+  the panel opens one tab per document and relative `.html` links switch tabs
+  inside the frame.
+- Ask-about-report: the panel question box composes a titled question plus a
+  report excerpt into the main composer for the agent to answer in chat.
+- Clicking a report card now always adds (or activates) a tab; turn-tail
+  auto-sync only refreshes the panel when the newer report keeps the same
+  title, so an edit-prompt rerun replaces in place while new reports stack.
+
 ## [0.17.0] - 2026-08-14
 
 - Fix: opening the report panel no longer unmounts the conversation cards

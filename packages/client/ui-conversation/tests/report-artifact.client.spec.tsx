@@ -39,6 +39,15 @@ const LABELS = {
   copy: 'copy',
   copied: 'copied',
   download: 'download',
+  searchPlaceholder: 'search…',
+  searchPrev: 'prev',
+  searchNext: 'next',
+  searchClear: 'clear',
+  minimizePanel: 'minimize',
+  expandPanel: 'expand panel',
+  closeAll: 'close all',
+  askPlaceholder: 'ask…',
+  askInChat: 'ask in chat',
 }
 
 describe('report artifacts', () => {
@@ -84,5 +93,94 @@ describe('report artifacts', () => {
     expect(reportArtifactStore.get().width).toBe(REPORT_PANEL_MAX_WIDTH)
     reportArtifactStore.setWidth(10)
     expect(reportArtifactStore.get().width).toBe(REPORT_PANEL_MIN_WIDTH)
+  })
+
+  it('minimizes to a bar and restores with the tabs intact', () => {
+    const view = render(
+      <>
+        <ReportCardBox title="Sales" html={HTML} hint={LABELS.cardHint} />
+        <ReportArtifactPanel labels={LABELS} />
+      </>,
+    )
+    fireEvent.click(view.container.querySelector('[data-report-card]')!)
+    fireEvent.click(view.getByRole('button', { name: 'minimize' }))
+    expect(view.container.querySelector('[data-report-min-bar]')).toBeTruthy()
+    expect(view.container.querySelector('[data-report-panel]')).toBeNull()
+    expect(reportArtifactStore.get().artifacts.length).toBe(1)
+    fireEvent.click(view.getByRole('button', { name: /expand panel/ }))
+    expect(view.container.querySelector('[data-report-panel]')).toBeTruthy()
+    expect(view.container.querySelectorAll('[data-report-tab]').length).toBe(1)
+  })
+
+  it('closes every artifact from the minimized bar', () => {
+    const view = render(
+      <>
+        <ReportCardBox title="Sales" html={HTML} hint={LABELS.cardHint} />
+        <ReportArtifactPanel labels={LABELS} />
+      </>,
+    )
+    fireEvent.click(view.container.querySelector('[data-report-card]')!)
+    fireEvent.click(view.getByRole('button', { name: 'minimize' }))
+    fireEvent.click(view.getByRole('button', { name: 'close all' }))
+    expect(reportArtifactStore.get().artifacts.length).toBe(0)
+    expect(view.container.querySelector('[data-report-min-bar]')).toBeNull()
+  })
+
+  it('expands a multi-document delivery into one tab per document', () => {
+    const view = render(
+      <>
+        <ReportCardBox
+          title="Batch"
+          html={HTML}
+          hint={LABELS.cardHint}
+          documents={[
+            { name: 'index.html', title: 'Batch', html: HTML },
+            { name: '01-sales.html', title: 'Sales', html: V2_HTML },
+          ]}
+        />
+        <ReportArtifactPanel labels={LABELS} />
+      </>,
+    )
+    fireEvent.click(view.container.querySelector('[data-report-card]')!)
+    expect(reportArtifactStore.get().artifacts.length).toBe(2)
+    expect(reportArtifactStore.get().active).toBe(0)
+    fireEvent.click(view.container.querySelectorAll('[data-report-tab]')[1]!)
+    expect(reportArtifactStore.get().active).toBe(1)
+    reportArtifactStore.selectDocument('index.html')
+    expect(reportArtifactStore.get().active).toBe(0)
+  })
+
+  it('records scroll offsets per artifact and restores them on switch', () => {
+    const view = render(
+      <>
+        <ReportCardBox title="Sales" html={HTML} hint={LABELS.cardHint} />
+        <ReportCardBox title="Churn" html={V2_HTML} hint={LABELS.cardHint} />
+        <ReportArtifactPanel labels={LABELS} />
+      </>,
+    )
+    const cards = view.container.querySelectorAll('[data-report-card]')
+    fireEvent.click(cards[0]!)
+    fireEvent.click(cards[1]!)
+    reportArtifactStore.recordScrollTop(420)
+    expect(reportArtifactStore.get().artifacts[1]?.scrollTop).toBe(420)
+    fireEvent.click(view.container.querySelectorAll('[data-report-tab]')[0]!)
+    fireEvent.click(view.container.querySelectorAll('[data-report-tab]')[1]!)
+    expect(reportArtifactStore.get().artifacts[1]?.scrollTop).toBe(420)
+  })
+
+  it('renders the search row and composes ask-about-report into the callback', () => {
+    const onAsk = vi.fn()
+    const view = render(
+      <>
+        <ReportCardBox title="Sales" html={HTML} hint={LABELS.cardHint} />
+        <ReportArtifactPanel labels={LABELS} onAsk={onAsk} />
+      </>,
+    )
+    fireEvent.click(view.container.querySelector('[data-report-card]')!)
+    expect(view.container.querySelector('[data-report-search]')).toBeTruthy()
+    const askInput = view.container.querySelector('[data-report-ask] input') as HTMLInputElement
+    fireEvent.change(askInput, { target: { value: 'What is the trend?' } })
+    fireEvent.click(view.getByRole('button', { name: 'ask in chat' }))
+    expect(onAsk).toHaveBeenCalledWith('What is the trend?', expect.objectContaining({ title: 'Sales' }))
   })
 })

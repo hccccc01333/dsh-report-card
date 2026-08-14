@@ -30,4 +30,41 @@ describe('reportViewFromNode', () => {
     expect(reportViewFromNode({ kind: 'assistant', data: {} } as never)).toBeNull()
     expect(reportViewFromNode(undefined)).toBeNull()
   })
+
+  it('validates multi-document deliveries and drops malformed entries', () => {
+    expect(reportViewFromNode(toolNode({
+      card: 'report',
+      title: 'Batch',
+      html: HTML,
+      documents: [
+        { name: 'index.html', title: 'Batch', html: HTML },
+        { name: '01-sales.html', title: 'Sales', html: HTML },
+        { name: '', title: 'Bad', html: HTML },
+        { name: '02-empty.html', title: 'Empty', html: '' },
+        { name: '03-no-title.html', html: HTML },
+      ],
+    }) as never)).toEqual({
+      title: 'Batch',
+      html: HTML,
+      documents: [
+        { name: 'index.html', title: 'Batch', html: HTML },
+        { name: '01-sales.html', title: 'Sales', html: HTML },
+        { name: '03-no-title.html', title: '03-no-title.html', html: HTML },
+      ],
+    })
+  })
+
+  it('ignores an empty or non-array documents field', () => {
+    expect(reportViewFromNode(toolNode({
+      card: 'report',
+      title: 'Sales',
+      html: HTML,
+      documents: [],
+    }) as never)).toEqual({ title: 'Sales', html: HTML })
+    expect(reportViewFromNode(toolNode({
+      card: 'report',
+      html: HTML,
+      documents: 'nope',
+    }) as never)).toEqual({ title: undefined, html: HTML })
+  })
 })

@@ -73,7 +73,12 @@ export const TurnTailNodeView = memo(function TurnTailNodeView({
       />
       {reportView !== null && (
         <div className={css.reportCard} data-report-standalone>
-          <ReportCardBox title={reportView.title} html={reportView.html} hint={t('report.cardHint')} />
+          <ReportCardBox
+            title={reportView.title}
+            html={reportView.html}
+            documents={reportView.documents}
+            hint={t('report.cardHint')}
+          />
         </div>
       )}
     </div>

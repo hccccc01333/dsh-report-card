@@ -145,7 +145,7 @@ function TurnStatus({ startTime, t }: {
  * ordered business Node crosses the keyed renderer seat.
  */
 export function ChatView({
-  useSession, useSessions, useStore, renderSlot, sessionId, openFile, loadOlder, loadImage, inspectCall, chatScroll, forkAt,
+  useSession, useSessions, useStore, renderSlot, sessionId, openFile, loadOlder, loadImage, inspectCall, chatScroll, forkAt, inputActions,
   fileMentions, t,
 }: ChatViewSlotProps) {
   const order = useSession(s => s.chat.order)
@@ -432,6 +432,16 @@ export function ChatView({
         </div>
       </div>
       <ReportArtifactPanel
+        onAsk={(question, artifact) => {
+          // Bridge the question into the composer: the agent answers in the
+          // main conversation where it can see the report's full context.
+          const excerpt = artifact.html
+            .replace(/<[^>]*>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .slice(0, 1500)
+          inputActions.setDraft(`针对报告《${artifact.title ?? 'HTML Report'}》提问：${question}\n\n报告摘要：${excerpt}`)
+        }}
         labels={{
           cardHint: t('report.cardHint'),
           closePanel: t('report.closePanel'),
@@ -442,6 +452,15 @@ export function ChatView({
           copy: t('report.copy'),
           copied: t('report.copied'),
           download: t('report.download'),
+          searchPlaceholder: t('report.searchPlaceholder'),
+          searchPrev: t('report.searchPrev'),
+          searchNext: t('report.searchNext'),
+          searchClear: t('report.searchClear'),
+          minimizePanel: t('report.minimizePanel'),
+          expandPanel: t('report.expandPanel'),
+          closeAll: t('report.closeAll'),
+          askPlaceholder: t('report.askPlaceholder'),
+          askInChat: t('report.askInChat'),
         }}
       />
     </div>

@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import {
   applyReportHeightMessage,
+  injectReportFrameBridge,
   injectReportAnchorNavigation,
   REPORT_HEIGHT_MESSAGE,
   ReportBlock,
@@ -89,6 +90,17 @@ describe('ReportBlock', () => {
     const injected = injectReportAnchorNavigation('<html><head><title>toc</title></html>')
     expect(injected.startsWith('<script>')).toBe(true)
     expect(injected.endsWith('</html>')).toBe(true)
+  })
+
+  it('injects the full frame bridge with search, scroll, and document-link handling', () => {
+    const injected = injectReportFrameBridge('<!DOCTYPE html><html><head><title>toc</title></head><body>ok</body></html>')
+    expect(injected).toContain('dsh-report-search')
+    expect(injected).toContain('dsh-report-scroll-top')
+    expect(injected).toContain('dsh-report-restore-scroll')
+    expect(injected).toContain('dsh-report-open-document')
+    expect(injected).toContain('dsh-report-search-result')
+    expect(injected).toContain('createTreeWalker')
+    expect(injected).toContain('scrollIntoView')
   })
 
   it('opens the report in a new tab from a blob URL', () => {
