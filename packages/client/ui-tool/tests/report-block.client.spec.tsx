@@ -38,6 +38,13 @@ describe('ReportBlock', () => {
     expect(container.textContent).toContain('Collapse')
   })
 
+  it('fills the available height when fillHeight is set', () => {
+    const { container } = render(<ReportBlock html={HTML} fillHeight />)
+    const wrap = container.querySelector('[data-report-fill]')!
+    expect(wrap).toBeTruthy()
+    expect(wrap.hasAttribute('style')).toBe(false)
+  })
+
   it('applies the height contract as a pure function', () => {
     expect(applyReportHeightMessage({ type: REPORT_HEIGHT_MESSAGE, height: 700 }, 480)).toBe(700)
     expect(applyReportHeightMessage({ type: REPORT_HEIGHT_MESSAGE, height: 9999 }, 480)).toBe(1200)

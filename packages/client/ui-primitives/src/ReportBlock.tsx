@@ -35,6 +35,8 @@ export interface ReportBlockProps {
   expandLabel?: string | undefined
   /** Collapse button label; defaults to `Collapse`. */
   collapseLabel?: string | undefined
+  /** Fill the available height instead of sizing from the height contract. */
+  fillHeight?: boolean | undefined
 }
 
 /** Default frame height before a report reports its own height. */
@@ -100,6 +102,7 @@ export function ReportBlock({
   defaultExpanded = false,
   expandLabel = 'Expand',
   collapseLabel = 'Collapse',
+  fillHeight = false,
 }: ReportBlockProps) {
   const frameRef = useRef<HTMLIFrameElement>(null)
   const [height, setHeight] = useState(initialHeight)
@@ -174,7 +177,11 @@ export function ReportBlock({
           </button>
         </div>
       </div>
-      <div className={css.frameWrap} style={{ height: frameHeight }}>
+      <div
+        className={clsx(css.frameWrap, fillHeight && css.fillFrameWrap)}
+        style={fillHeight ? undefined : { height: frameHeight }}
+        data-report-fill={fillHeight || undefined}
+      >
         <iframe
           ref={frameRef}
           className={css.frame}

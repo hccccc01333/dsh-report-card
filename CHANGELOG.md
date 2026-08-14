@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.14.0] - 2026-08-14
+
+- The report inside the right panel fills the available panel height
+  (`fillHeight`), so the panel uses the full viewport space instead of leaving
+  empty area below a fixed 480px frame.
+
 ## [0.13.0] - 2026-08-14
 
 - The report panel is now fixed to the right side of the viewport

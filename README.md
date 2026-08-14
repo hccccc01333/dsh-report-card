@@ -30,7 +30,8 @@
   auto-replaces its content when a newer report arrives. Controls follow the
   UI language (zh/en). The panel is fixed to the right side of the viewport
   (full height, independent scroll) and the conversation reserves its width,
-  so the two are independent parallel spaces.
+  so the two are independent parallel spaces. The report fills the panel
+  height, so the whole pane is used.
 - `demo/report-card-demo` — a demo tool that emits the card.
 - `demo/report-html-integration` — mounts the
   [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so

@@ -105,6 +105,7 @@ export function ReportArtifactPanel({ labels }: { labels: ReportArtifactLabels }
       <div className={css.panelBody}>
         <ReportBlock
           key={reload}
+          fillHeight
           title={artifact.title}
           html={artifact.html}
           defaultExpanded
@@ -115,6 +116,7 @@ export function ReportArtifactPanel({ labels }: { labels: ReportArtifactLabels }
           copyLabel={labels.copy}
           copiedLabel={labels.copied}
           downloadLabel={labels.download}
+          className={css.reportFill}
         />
       </div>
     </aside>
