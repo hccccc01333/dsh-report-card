@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.17.0] - 2026-08-14
+
+- Fix: opening the report panel no longer unmounts the conversation cards
+  (a render-loop crash in the artifact store removed the turn tails; the store
+  methods are now referentially stable and the sync effect only fires when the
+  report HTML actually changes).
+- Fix: table-of-contents anchor links inside a report now scroll the target
+  into view. The frame injects an in-document navigation shim before it loads,
+  so hash jumps work inside the sandboxed blob frame without granting
+  same-origin access.
+
 ## [0.16.0] - 2026-08-14
 
 - Report frames load through a blob URL instead of `srcdoc`, so table-of-

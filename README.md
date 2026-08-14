@@ -33,8 +33,9 @@
   so the two are independent parallel spaces. The report fills the panel
   height, so the whole pane is used. Multiple reports open as tabs in the
   panel, and the panel width is draggable (320-800px). Reports load through
-  blob URLs, so in-report anchor links (table of contents) scroll instead of
-  blanking the frame, and the collapsed preview stays scrollable.
+  blob URLs with an injected in-frame navigation shim, so in-report anchor
+  links (table of contents) smooth-scroll to their target without blanking
+  the frame, and the collapsed preview stays scrollable.
 - `demo/report-card-demo` — a demo tool that emits the card.
 - `demo/report-html-integration` — mounts the
   [dsh-report-html](https://github.com/hccccc01333/dsh-report-html) plugin so

@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ChatNode } from '../contract/chat-nodes.ts'
 import type { ChatNodeViewProps, TurnTailOwnerProps } from '../contract/slots.ts'
@@ -32,8 +32,11 @@ export const TurnTailNodeView = memo(function TurnTailNodeView({
   })
   // A newer report replaces the content of an already-open panel immediately.
   const { sync } = useReportArtifact()
+  const syncedHtml = useRef<string | null>(null)
   useEffect(() => {
-    if (reportView !== null) sync(reportView)
+    if (reportView === null || syncedHtml.current === reportView.html) return
+    syncedHtml.current = reportView.html
+    sync(reportView)
   }, [reportView, sync])
   const turn = node.location.kind === 'turn' || node.location.kind === 'step'
     ? node.location.turn

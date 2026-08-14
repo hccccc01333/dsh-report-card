@@ -82,6 +82,44 @@ export function reportFileName(title: string | undefined): string {
 }
 
 /**
+ * Wrap a self-contained report document with an in-frame anchor-navigation
+ * shim. The sandboxed blob frame is opaque to the host page, so the host
+ * cannot intercept its hash links; this script runs inside the frame and
+ * scrolls table-of-contents targets into view instead of relying on browser
+ * hash navigation inside a blob document.
+ * @param html - the self-contained report document.
+ * @returns the document with the shim inserted before `</head>` (or before
+ * the body when the document has no head close tag).
+ */
+export function injectReportAnchorNavigation(html: string): string {
+  const shim = [
+    '<script>',
+    '(function () {',
+    '  document.addEventListener("click", function (event) {',
+    '    var anchor = event.target;',
+    '    while (anchor !== null && anchor.nodeName !== "A") anchor = anchor.parentNode;',
+    '    if (anchor === null || anchor.nodeName !== "A") return;',
+    '    var href = anchor.getAttribute("href") || "";',
+    '    if (href.charAt(0) !== "#") return;',
+    '    event.preventDefault();',
+    '    var id;',
+    '    try { id = decodeURIComponent(href.slice(1)); }',
+    '    catch (error) { id = href.slice(1); }',
+    '    if (id === "") return;',
+    '    var target = document.getElementById(id) || document.querySelector("[name=\\"" + id + "\\"]");',
+    '    if (target !== null) target.scrollIntoView({ behavior: "smooth", block: "start" });',
+    '  }, true);',
+    '})();',
+    '</script>',
+  ].join('\n')
+  const headEnd = html.indexOf('</head>')
+  if (headEnd >= 0) return `${html.slice(0, headEnd)}${shim}${html.slice(headEnd)}`
+  const bodyStart = html.search(/<body[^>]*>/i)
+  if (bodyStart >= 0) return `${html.slice(0, bodyStart)}${shim}${html.slice(bodyStart)}`
+  return `${shim}\n${html}`
+}
+
+/**
  * Render a completed `card: 'report'` result inside a sandboxed iframe.
  * The frame starts at {@link REPORT_DEFAULT_HEIGHT}; a report script can send
  * `{ type: 'dsh-report-height', height }` via `parent.postMessage` and the
@@ -112,8 +150,9 @@ export function ReportBlock({
   useEffect(() => {
     // Load the report through a blob URL instead of srcdoc: anchor links
     // (table-of-contents jumps) become same-document hash navigation and never
-    // blank the frame by reloading about:srcdoc.
-    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }))
+    // blank the frame by reloading about:srcdoc. The injected shim handles the
+    // scroll itself because the sandboxed frame is opaque to this page.
+    const url = URL.createObjectURL(new Blob([injectReportAnchorNavigation(html)], { type: 'text/html' }))
     setBlobUrl(url)
     return () => URL.revokeObjectURL(url)
   }, [html])

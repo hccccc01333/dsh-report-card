@@ -4,7 +4,7 @@
  * @module
  */
 
-import { useRef, useState, useSyncExternalStore } from 'react'
+import { useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { ReportBlock } from '@deepseek-ai/dsh-client-ui-primitives'
 import css from './report-artifact.module.css'
 
@@ -116,14 +116,17 @@ export function useReportArtifact(): ReportArtifactState & {
   setWidth: (width: number) => void
 } {
   const snapshot = useSyncExternalStore(reportArtifactStore.subscribe, reportArtifactStore.get)
-  return {
+  // Keep the method handles referentially stable for a given snapshot: a
+  // freshly-spread object on every render makes effect deps change each time
+  // and can loop a `sync` effect into an infinite render cycle.
+  return useMemo(() => ({
     ...snapshot,
     open: reportArtifactStore.open,
     sync: reportArtifactStore.sync,
     close: reportArtifactStore.close,
     select: reportArtifactStore.select,
     setWidth: reportArtifactStore.setWidth,
-  }
+  }), [snapshot])
 }
 
 /**

@@ -5,7 +5,12 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import { applyReportHeightMessage, REPORT_HEIGHT_MESSAGE, ReportBlock } from '@deepseek-ai/dsh-client-ui-primitives'
+import {
+  applyReportHeightMessage,
+  injectReportAnchorNavigation,
+  REPORT_HEIGHT_MESSAGE,
+  ReportBlock,
+} from '@deepseek-ai/dsh-client-ui-primitives'
 
 afterEach(cleanup)
 
@@ -63,6 +68,27 @@ describe('ReportBlock', () => {
     expect(applyReportHeightMessage({ type: 'other', height: 700 }, 480)).toBe(480)
     expect(applyReportHeightMessage({ type: REPORT_HEIGHT_MESSAGE, height: '700' }, 480)).toBe(480)
     expect(applyReportHeightMessage(null, 480)).toBe(480)
+  })
+
+  it('injects the anchor navigation shim before the head close tag', () => {
+    const injected = injectReportAnchorNavigation('<!DOCTYPE html><html><head><title>toc</title></head><body>ok</body></html>')
+    expect(injected.indexOf('document.addEventListener("click"')).toBeGreaterThan(-1)
+    expect(injected.indexOf('</head>')).toBeGreaterThan(injected.indexOf('<script>'))
+    // The original content stays intact around the shim.
+    expect(injected.startsWith('<!DOCTYPE html><html><head><title>toc</title>')).toBe(true)
+    expect(injected.endsWith('</head><body>ok</body></html>')).toBe(true)
+  })
+
+  it('injects the shim before the body when the head is not explicitly closed', () => {
+    const injected = injectReportAnchorNavigation('<html><head><title>toc</title><body>ok</body></html>')
+    expect(injected.indexOf('<script>')).toBeLessThan(injected.indexOf('<body'))
+    expect(injected.endsWith('<body>ok</body></html>')).toBe(true)
+  })
+
+  it('prepends the shim to documents without a body', () => {
+    const injected = injectReportAnchorNavigation('<html><head><title>toc</title></html>')
+    expect(injected.startsWith('<script>')).toBe(true)
+    expect(injected.endsWith('</html>')).toBe(true)
   })
 
   it('opens the report in a new tab from a blob URL', () => {

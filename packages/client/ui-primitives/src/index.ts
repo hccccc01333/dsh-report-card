@@ -42,6 +42,7 @@ export type { WebBlockProps, WebSearchBlockProps, WebFetchBlockProps, WebSourceV
 export {
   ReportBlock,
   applyReportHeightMessage,
+  injectReportAnchorNavigation,
   reportFileName,
   REPORT_DEFAULT_HEIGHT,
   REPORT_DETAILS_INITIAL_HEIGHT,
