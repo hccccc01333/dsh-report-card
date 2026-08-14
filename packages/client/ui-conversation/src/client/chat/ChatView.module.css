@@ -33,10 +33,24 @@
   height: auto;
 }
 
+/* Split mode with the report panel open: the conversation becomes its own
+   full-height scrollport so the right panel is an independent space. */
+:global([data-conversation-scroll]) .root.split {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+
 :global([data-conversation-scroll]) .scroll {
   overflow: visible;
   flex: 0 0 auto;
   min-height: auto;
+}
+
+:global([data-conversation-scroll]) .root.split .scroll {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 /* Message column: shared chat width (ConversationRoot --dsh-chat-content-width),

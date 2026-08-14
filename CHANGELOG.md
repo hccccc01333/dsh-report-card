@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0] - 2026-08-14
+
+- Split-view fix: when the report panel is open, the conversation becomes its
+  own full-height scrollport and the panel is an independent right-hand space
+  (Codex-style). The outer chat scroll no longer carries the panel away, and
+  the panel fills the full height with its own scroll.
+
 ## [0.11.0] - 2026-08-14
 
 - The report artifact opens as an inline right-hand pane in the same layout
