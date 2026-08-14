@@ -18,6 +18,7 @@ import { IconChevronDownOutline14 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ChatViewSlotProps } from '../contract/slots.ts'
 import { PendingSteeringBubble } from './MessageItem.tsx'
 import { ChatNodeSeat } from './ChatNodeSeat.tsx'
+import { ReportArtifactPanel, ReportArtifactProvider } from './report-artifact.tsx'
 import { formatRunDuration } from './message-chrome.ts'
 import css from './ChatView.module.css'
 
@@ -363,65 +364,79 @@ export function ChatView({
   }
 
   return (
-    <div className={css.root}>
-      <div ref={listRef} className={css.scroll}>
-        <div ref={columnRef} className={css.column} data-chat-flow="">
-          {openState === 'loading' && <div className={css.hint}>{t('chat.loadingHistory')}</div>}
-          {openState === 'error' && openError !== null && (
-            <div className={css.openError}>
-              {t('chat.loadError', { message: openError.message, code: openError.code })}
-            </div>
-          )}
-          {hasMore && (
-            <div className={css.older}>
-              <button type="button" disabled={loadingOlder} onClick={loadOlderAnchored}>
-                {loadingOlder ? t('loading') : t('chat.loadOlder')}
+    <ReportArtifactProvider>
+      <div className={css.root}>
+        <div ref={listRef} className={css.scroll}>
+          <div ref={columnRef} className={css.column} data-chat-flow="">
+            {openState === 'loading' && <div className={css.hint}>{t('chat.loadingHistory')}</div>}
+            {openState === 'error' && openError !== null && (
+              <div className={css.openError}>
+                {t('chat.loadError', { message: openError.message, code: openError.code })}
+              </div>
+            )}
+            {hasMore && (
+              <div className={css.older}>
+                <button type="button" disabled={loadingOlder} onClick={loadOlderAnchored}>
+                  {loadingOlder ? t('loading') : t('chat.loadOlder')}
+                </button>
+              </div>
+            )}
+            {order.map(nodeKey => (
+              <ChatNodeSeat
+                key={nodeKey}
+                nodeKey={nodeKey}
+                useSession={useSession}
+                selectedCallId={selectedCallId}
+                cwd={cwd}
+                openFile={openFile}
+                inspectCall={inspectCall}
+                forkAt={forkAt}
+                loadImage={loadImage}
+                fileMentions={fileMentions}
+                renderSlot={renderSlot}
+                t={t}
+              />
+            ))}
+            {/* No pending placeholders: questions (ui-user-questions) and approvals
+              (ApprovalPanel) both take over the composer, so a flow card would
+              double-render the same wait. */}
+            {/* Turn-level loading signal: rides the whole running turn (first-token
+              wait, tool execution, streaming) so it never flickers per step. */}
+            {running && <TurnStatus startTime={runningTurnStart} t={t} />}
+            {pendingSteering.map(item => (
+              <PendingSteeringBubble key={item.id} content={item.content} loadImage={loadImage} t={t} />
+            ))}
+          </div>
+          {!atBottom && (
+            <div className={css.toBottomSlot}>
+              <button
+                type="button"
+                className={css.toBottom}
+                aria-label={t('chat.toBottom')}
+                onClick={() => {
+                  const local = listRef.current
+                  /* v8 ignore next -- ref-null guard: the button only renders alongside the mounted list. */
+                  if (local !== null) toBottom(scrollerOf(local))
+                }}
+              >
+                <IconChevronDownOutline14 />
               </button>
             </div>
           )}
-          {order.map(nodeKey => (
-            <ChatNodeSeat
-              key={nodeKey}
-              nodeKey={nodeKey}
-              useSession={useSession}
-              selectedCallId={selectedCallId}
-              cwd={cwd}
-              openFile={openFile}
-              inspectCall={inspectCall}
-              forkAt={forkAt}
-              loadImage={loadImage}
-              fileMentions={fileMentions}
-              renderSlot={renderSlot}
-              t={t}
-            />
-          ))}
-          {/* No pending placeholders: questions (ui-user-questions) and approvals
-              (ApprovalPanel) both take over the composer, so a flow card would
-              double-render the same wait. */}
-          {/* Turn-level loading signal: rides the whole running turn (first-token
-              wait, tool execution, streaming) so it never flickers per step. */}
-          {running && <TurnStatus startTime={runningTurnStart} t={t} />}
-          {pendingSteering.map(item => (
-            <PendingSteeringBubble key={item.id} content={item.content} loadImage={loadImage} t={t} />
-          ))}
         </div>
-        {!atBottom && (
-          <div className={css.toBottomSlot}>
-            <button
-              type="button"
-              className={css.toBottom}
-              aria-label={t('chat.toBottom')}
-              onClick={() => {
-                const local = listRef.current
-                /* v8 ignore next -- ref-null guard: the button only renders alongside the mounted list. */
-                if (local !== null) toBottom(scrollerOf(local))
-              }}
-            >
-              <IconChevronDownOutline14 />
-            </button>
-          </div>
-        )}
       </div>
-    </div>
+      <ReportArtifactPanel
+        labels={{
+          cardHint: t('report.cardHint'),
+          closePanel: t('report.closePanel'),
+          expand: t('report.expand'),
+          collapse: t('report.collapse'),
+          open: t('report.open'),
+          copy: t('report.copy'),
+          copied: t('report.copied'),
+          download: t('report.download'),
+        }}
+      />
+    </ReportArtifactProvider>
   )
 }

@@ -11,6 +11,14 @@ const PLAN_NEXT_ACTION_EN = 'describe your task to generate plan'
 /** Simplified Chinese dictionary (the key-set source of truth). */
 export const zh = {
   'view.chat': '对话',
+  'report.cardHint': '点击在右侧查看完整报告',
+  'report.closePanel': '关闭',
+  'report.expand': '展开',
+  'report.collapse': '收起',
+  'report.open': '新标签打开',
+  'report.copy': '复制 HTML',
+  'report.copied': '已复制',
+  'report.download': '下载 HTML',
   'hint.plan': PLAN_NEXT_ACTION_ZH,
   'hint.goal': '输入目标，智能体将持续执行',
   'hint.goal.active': '当前目标进行中。可输入 edit 修改 / pause 暂停 / resume 继续 / clear 清除',
@@ -180,6 +188,14 @@ export type ConversationKey = keyof typeof zh
 /** English dictionary, checked complete against the zh key set. */
 export const en = {
   'view.chat': 'Chat',
+  'report.cardHint': 'Click to view the full report on the right',
+  'report.closePanel': 'Close',
+  'report.expand': 'Expand',
+  'report.collapse': 'Collapse',
+  'report.open': 'Open in new tab',
+  'report.copy': 'Copy HTML',
+  'report.copied': 'Copied',
+  'report.download': 'Download HTML',
   'hint.plan': PLAN_NEXT_ACTION_EN,
   'hint.goal': 'describe the objective for a long-running task',
   'hint.goal.active': 'goal active — edit / pause / resume / clear',

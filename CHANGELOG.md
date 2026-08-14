@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0] - 2026-08-14
+
+- ChatGPT-style report artifacts: the conversation shows a small title card;
+  clicking it opens a right-side application panel with the full HTML report
+  (expand/collapse, open, copy, download).
+- Card and panel controls are localized (zh/en) and follow the UI language.
+
 ## [0.9.0] - 2026-08-14
 
 - Report cards now render at the **turn tail** (the bottom of the

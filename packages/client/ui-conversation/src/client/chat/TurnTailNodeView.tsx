@@ -1,10 +1,10 @@
 import { memo } from 'react'
-import { ReportBlock } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ChatNode } from '../contract/chat-nodes.ts'
 import type { ChatNodeViewProps, TurnTailOwnerProps } from '../contract/slots.ts'
 import { MessageIconActions } from './MessageIconActions.tsx'
 import { assistantText } from './turn-assistant.ts'
+import { ReportCardBox } from './report-artifact.tsx'
 import { reportViewFromNode } from './report-card.ts'
 import css from './TurnTailNodeView.module.css'
 
@@ -65,7 +65,7 @@ export const TurnTailNodeView = memo(function TurnTailNodeView({
       />
       {reportView !== null && (
         <div className={css.reportCard} data-report-standalone>
-          <ReportBlock title={reportView.title} html={reportView.html} />
+          <ReportCardBox title={reportView.title} html={reportView.html} hint={t('report.cardHint')} />
         </div>
       )}
     </div>
