@@ -55,6 +55,8 @@ allowBuilds:
   # The Python runtime deploy includes the reviewed workspace postinstall that
   # restores the executable bit on node-pty's macOS spawn helper.
   '@deepseek-ai/dsh-subprocess-local@file:packages/subprocess/subprocess-local': true
+  # dsh-report-html's report_sql reads SQLite through this native binding.
+  better-sqlite3: true
 
 minimumReleaseAgeExclude:
   # Fresh pi-ai releases carry the model catalog updates that are the whole
@@ -69,6 +71,7 @@ minimumReleaseAgeExclude:
   - node-addon-require-builtin-win32-ia32-msvc@0.1.4
   - node-addon-require-builtin-win32-x64-msvc@0.1.4
   - node-addon-require-builtin@0.1.4
+  - dsh-report-html@1.8.1
 
 patchedDependencies:
   node-pty@1.1.0: patches/node-pty@1.1.0.patch

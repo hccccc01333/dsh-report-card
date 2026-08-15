@@ -1,4 +1,4 @@
-# Mounts dsh-report-html (its standalone repo) into this fork's CLI / Web UI so
+# Mounts dsh-report-html (published on npm) into this fork's CLI / Web UI so
 # its report_html and report_analysis tools emit card: 'report' views.
 #
 # Run (headless, real model):
@@ -7,4 +7,4 @@
 #   pnpm dsh --profile web --patch ./demo/report-html-integration/cordis.yml
 - insert:
     - id: dsh-report-html
-      name: 'file:///D:/dsh-report-html/src/index.ts'
+      name: 'dsh-report-html'

@@ -66,6 +66,10 @@ export function isOwnerAuthorizedRuntime(name: string): boolean {
  * Each entry documents why the store cannot answer.
  */
 const OVERRIDES: Record<string, { license?: string; repo?: string }> = {
+  // dsh-report-html (MIT) publishes without a repository field; its source
+  // repository was archived and removed, so the original location is recorded
+  // for attribution.
+  'dsh-report-html': { license: 'MIT', repo: 'https://github.com/hccccc01333/dsh-report-html' },
   // Rust workspaces publishing npm bins without `license` in package.json.
   'oxlint': { license: 'MIT', repo: 'https://github.com/oxc-project/oxc' },
   'oxlint-tsgolint': { license: 'MIT', repo: 'https://github.com/oxc-project/tsgolint' },
