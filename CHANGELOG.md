@@ -4,7 +4,7 @@
 
 - **Panel plugin extraction**: the report card + right-hand panel moved out of
   `dsh-client-ui-conversation` into a standalone client plugin
-  `@deepseek-ai/dsh-client-ui-report-panel`. `ui-conversation` is back to the
+  `dsh-client-ui-report-panel`. `ui-conversation` is back to the
   upstream baseline; the plugin contributes the turn-tail card entry and the
   composer-dock panel entry through public slots.
 - The plugin is mounted through the web-app browser roster, so hosts can

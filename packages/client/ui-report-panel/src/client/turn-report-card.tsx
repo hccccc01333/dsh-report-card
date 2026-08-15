@@ -2,7 +2,7 @@
  * Turn-tail report card entry: renders the last `card: 'report'` view of the
  * closing turn as a ChatGPT-style card, fully outside the tool-call tree, and
  * syncs newer reports into the already-open panel.
- * @module @deepseek-ai/dsh-client-ui-report-panel/client/turn-report-card
+ * @module dsh-client-ui-report-panel/client/turn-report-card
  */
 
 import { useEffect, useRef } from 'react'

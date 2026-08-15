@@ -1336,9 +1336,6 @@ importers:
       '@deepseek-ai/dsh-client-ui-plan':
         specifier: workspace:^
         version: link:../../client/ui-plan
-      '@deepseek-ai/dsh-client-ui-report-panel':
-        specifier: workspace:^
-        version: link:../../client/ui-report-panel
       '@deepseek-ai/dsh-client-ui-settings':
         specifier: workspace:^
         version: link:../../client/ui-settings
@@ -1447,6 +1444,9 @@ importers:
       commander:
         specifier: ^15.0.0
         version: 15.0.0
+      dsh-client-ui-report-panel:
+        specifier: workspace:^
+        version: link:../../client/ui-report-panel
     devDependencies:
       '@deepseek-ai/cordis':
         specifier: workspace:^

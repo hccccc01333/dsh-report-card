@@ -1,5 +1,5 @@
 {
-  "name": "@deepseek-ai/dsh-client-ui-report-panel",
+  "name": "dsh-client-ui-report-panel",
   "description": "ChatGPT-style report artifact panel for the card: 'report' render intent: turn-tail cards, a right-hand panel with tabs/search/scroll memory, and ask-in-chat",
   "version": "0.1.0-rc.5",
   "publishConfig": {

@@ -2,7 +2,7 @@
  * ChatGPT-style report artifacts: small title cards in the conversation open a
  * right-hand report panel with multi-report tabs, search, scroll memory, and a
  * draggable width.
- * @module @deepseek-ai/dsh-client-ui-report-panel/client/report-artifact
+ * @module dsh-client-ui-report-panel/client/report-artifact
  */
 
 import { useMemo, useRef, useState, useSyncExternalStore } from 'react'

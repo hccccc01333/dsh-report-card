@@ -1,6 +1,6 @@
 /**
  * Report panel dictionary: card, panel, search, and ask-in-chat copy.
- * @module @deepseek-ai/dsh-client-ui-report-panel/client/locales
+ * @module dsh-client-ui-report-panel/client/locales
  */
 
 export const NS = 'reportPanel'

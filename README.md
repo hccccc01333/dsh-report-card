@@ -7,7 +7,7 @@
 ## What this fork adds
 
 - `packages/client/ui-report-panel` - a standalone client plugin
-  (`@deepseek-ai/dsh-client-ui-report-panel`) that contributes the report
+  (`dsh-client-ui-report-panel`) that contributes the report
   artifact surface through public ui-conversation slots: the turn-tail card
   and the right-hand panel (tabs, search, scroll memory, minimize,
   multi-document tabs, ask-in-chat). The fork's `ui-conversation` stays at the
@@ -59,6 +59,19 @@
 
 Real server, real model round: ask for a report, click the card, and the full
 report opens in an independent right-hand panel.
+
+## Install the panel plugin
+
+The report panel ships as an npm plugin and can be added to any dsh host:
+
+```sh
+dsh plugin --profile web add dsh-client-ui-report-panel
+```
+
+Pair it with a report generator such as
+[dsh-report-html](https://github.com/hccccc01333/dsh-report-html)
+(`dsh plugin --profile web add dsh-report-html`). The fork's demo overlay
+`demo/report-html-integration/cordis.yml` mounts both for local development.
 
 ## Try the demo
 

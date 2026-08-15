@@ -3,7 +3,7 @@
  * the right-hand report panel (tabs/search/scroll memory/ask-in-chat) for the
  * `card: 'report'` render intent. Composing this plugin out removes both
  * surfaces; the conversation stays a plain chat.
- * @module @deepseek-ai/dsh-client-ui-report-panel/client
+ * @module dsh-client-ui-report-panel/client
  */
 
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'

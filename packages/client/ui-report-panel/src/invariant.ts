@@ -1,13 +1,13 @@
 /**
- * Package-owned invariant companion for `@deepseek-ai/dsh-client-ui-report-panel`.
- * @module @deepseek-ai/dsh-client-ui-report-panel/invariant
+ * Package-owned invariant companion for `dsh-client-ui-report-panel`.
+ * @module dsh-client-ui-report-panel/invariant
  */
 
 /* jscpd:ignore-start */
 import type { Context } from '@deepseek-ai/cordis'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-client-ui-report-panel'
+const PACKAGE_NAME = 'dsh-client-ui-report-panel'
 
 /** Cordis companion plugin name. */
 export const name = 'client-ui-report-panel-invariant'

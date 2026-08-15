@@ -4,7 +4,7 @@
  * turn presented `card: 'report'` views (seq + title only; the HTML itself is
  * read from the conversation snapshot by the mounted card, never duplicated
  * into location data).
- * @module @deepseek-ai/dsh-client-ui-report-panel/client/turn-reports
+ * @module dsh-client-ui-report-panel/client/turn-reports
  */
 
 import type {

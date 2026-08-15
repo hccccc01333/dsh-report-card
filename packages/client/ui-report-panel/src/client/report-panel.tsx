@@ -1,7 +1,7 @@
 /**
  * Composer-dock report panel entry: the right-hand fixed panel plus the
  * ask-about-report row that composes a question into the main composer.
- * @module @deepseek-ai/dsh-client-ui-report-panel/client/report-panel
+ * @module dsh-client-ui-report-panel/client/report-panel
  */
 
 import { useMemo } from 'react'

@@ -2,7 +2,7 @@
  * Slot entry types for the report panel plugin: the turn-tail card entry and
  * the composer-dock panel entry. Both slots are declared and typed by
  * ui-conversation; this package only contributes entries.
- * @module @deepseek-ai/dsh-client-ui-report-panel/client/slots
+ * @module dsh-client-ui-report-panel/client/slots
  */
 
 import type { PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
